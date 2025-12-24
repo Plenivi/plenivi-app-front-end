@@ -23,6 +23,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+import { useBeneficios } from 'src/contexts/beneficios-context';
 
 import { Iconify } from 'src/components/iconify';
 
@@ -31,11 +32,10 @@ import { Iconify } from 'src/components/iconify';
 // Mock data
 const mockUsuario = {
   nome: 'João Silva',
-  email: 'joao.silva@techsolutions.com.br',
+  email: 'joao.silva@email.com.br',
   cpf: '***.***.***-90',
   telefone: '(11) 99999-9999',
   dataNascimento: '15/03/1985',
-  empresa: 'Tech Solutions Ltda',
   matricula: 'TS-2024-001',
   avatar: '/assets/images/avatars/avatar-1.webp',
 };
@@ -117,6 +117,7 @@ function TabPanel({ children, value, index, ...other }: TabPanelProps) {
 // ----------------------------------------------------------------------
 
 export function PerfilView() {
+  const { beneficios, beneficioAtual } = useBeneficios();
   const [tabValue, setTabValue] = useState(0);
   const [editando, setEditando] = useState(false);
   const [dadosUsuario, setDadosUsuario] = useState(mockUsuario);
@@ -155,7 +156,59 @@ export function PerfilView() {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               {dadosUsuario.email}
             </Typography>
-            <Chip label={dadosUsuario.empresa} color="primary" variant="outlined" />
+
+            <Divider sx={{ my: 3 }} />
+
+            <Box sx={{ textAlign: 'left' }}>
+              <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+                Meus Benefícios ({beneficios.filter((b) => b.status === 'ativo').length})
+              </Typography>
+              {beneficios
+                .filter((b) => b.status === 'ativo')
+                .map((beneficio) => (
+                  <Box
+                    key={beneficio.id}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      mb: 1,
+                      p: 1,
+                      borderRadius: 1,
+                      bgcolor: beneficio.id === beneficioAtual?.id ? 'primary.lighter' : 'grey.100',
+                      border: beneficio.id === beneficioAtual?.id ? 1 : 0,
+                      borderColor: 'primary.main',
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={beneficio.logo}
+                      alt={beneficio.empresa}
+                      sx={{ width: 24, height: 24, borderRadius: '50%' }}
+                    />
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
+                        {beneficio.empresa}
+                      </Typography>
+                    </Box>
+                    <Chip
+                      label="Ativo"
+                      color="success"
+                      size="small"
+                      sx={{ height: 20, fontSize: '0.65rem' }}
+                    />
+                  </Box>
+                ))}
+              <Button
+                variant="text"
+                size="small"
+                startIcon={<Iconify icon="solar:add-circle-bold" width={16} />}
+                href="/beneficios"
+                sx={{ mt: 1 }}
+              >
+                Gerenciar benefícios
+              </Button>
+            </Box>
 
             <Divider sx={{ my: 3 }} />
 
@@ -182,6 +235,8 @@ export function PerfilView() {
             <Tabs
               value={tabValue}
               onChange={(_, newValue) => setTabValue(newValue)}
+              variant="scrollable"
+              scrollButtons="auto"
               sx={{ borderBottom: 1, borderColor: 'divider', px: 3 }}
             >
               <Tab label="Dados Pessoais" icon={<Iconify icon="solar:user-bold" width={20} />} iconPosition="start" />
@@ -260,15 +315,6 @@ export function PerfilView() {
                       fullWidth
                       label="Data de Nascimento"
                       value={dadosUsuario.dataNascimento}
-                      disabled
-                      slotProps={{ inputLabel: { shrink: true } }}
-                    />
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 6 }}>
-                    <TextField
-                      fullWidth
-                      label="Empresa"
-                      value={dadosUsuario.empresa}
                       disabled
                       slotProps={{ inputLabel: { shrink: true } }}
                     />

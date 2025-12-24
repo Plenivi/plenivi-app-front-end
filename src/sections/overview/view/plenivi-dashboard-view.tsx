@@ -15,19 +15,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+import { useBeneficios } from 'src/contexts/beneficios-context';
 
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
-
-// Mock data - Em produção, viria de uma API
-const mockUserData = {
-  nome: 'João Silva',
-  empresa: 'Tech Solutions Ltda',
-  saldoTotal: 500.0,
-  saldoUtilizado: 150.0,
-  saldoDisponivel: 350.0,
-};
 
 const mockPedidos = [
   { id: 1, descricao: 'Armação Ray-Ban RB7047', status: 'em_producao', data: '20/12/2024' },
@@ -42,7 +34,12 @@ const mockConsultas = [
 
 export function PleniviDashboardView() {
   const { user } = useUser();
-  const percentualUtilizado = (mockUserData.saldoUtilizado / mockUserData.saldoTotal) * 100;
+  const { beneficioAtual } = useBeneficios();
+
+  const saldoTotal = beneficioAtual?.saldoTotal || 0;
+  const saldoUtilizado = beneficioAtual?.saldoUtilizado || 0;
+  const saldoDisponivel = beneficioAtual?.saldoDisponivel || 0;
+  const percentualUtilizado = saldoTotal > 0 ? (saldoUtilizado / saldoTotal) * 100 : 0;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -143,13 +140,13 @@ export function PleniviDashboardView() {
               </Box>
 
               <Typography variant="h3" sx={{ mb: 2 }}>
-                R$ {mockUserData.saldoDisponivel.toFixed(2).replace('.', ',')}
+                R$ {saldoDisponivel.toFixed(2).replace('.', ',')}
               </Typography>
 
               <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    Utilizado: R$ {mockUserData.saldoUtilizado.toFixed(2).replace('.', ',')}
+                    Utilizado: R$ {saldoUtilizado.toFixed(2).replace('.', ',')}
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>
                     {percentualUtilizado.toFixed(0)}%
@@ -170,7 +167,7 @@ export function PleniviDashboardView() {
               </Box>
 
               <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                Total do benefício: R$ {mockUserData.saldoTotal.toFixed(2).replace('.', ',')}
+                Total do benefício: R$ {saldoTotal.toFixed(2).replace('.', ',')}
               </Typography>
             </CardContent>
           </Card>

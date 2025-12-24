@@ -248,6 +248,8 @@ export function ConsultasView() {
       <Tabs
         value={tabValue}
         onChange={(_, newValue) => setTabValue(newValue)}
+        variant="scrollable"
+        scrollButtons="auto"
         sx={{ mb: 3 }}
       >
         <Tab label="Próximas Consultas" />

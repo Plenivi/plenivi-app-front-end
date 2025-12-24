@@ -41,6 +41,11 @@ export const navData: NavItem[] = [
     icon: iconify('solar:box-bold-duotone'),
   },
   {
+    title: 'Meus Benefícios',
+    path: '/beneficios',
+    icon: iconify('solar:wallet-bold-duotone'),
+  },
+  {
     title: 'Meu Perfil',
     path: '/perfil',
     icon: icon('ic-user'),

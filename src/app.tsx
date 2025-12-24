@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { usePathname } from 'src/routes/hooks';
 
 import { ThemeProvider } from 'src/theme/theme-provider';
+import { BeneficiosProvider } from 'src/contexts/beneficios-context';
 
 // ----------------------------------------------------------------------
 
@@ -15,7 +16,11 @@ type AppProps = {
 export default function App({ children }: AppProps) {
   useScrollToTop();
 
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider>
+      <BeneficiosProvider>{children}</BeneficiosProvider>
+    </ThemeProvider>
+  );
 }
 
 // ----------------------------------------------------------------------

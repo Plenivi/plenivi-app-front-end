@@ -9,22 +9,20 @@ import MenuList from '@mui/material/MenuList';
 import ButtonBase from '@mui/material/ButtonBase';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
+import { useBeneficios } from 'src/contexts/beneficios-context';
+
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export type WorkspacesPopoverProps = ButtonBaseProps & {
-  data?: {
-    id: string;
-    name: string;
-    logo: string;
-    plan: string;
-  }[];
-};
+export type WorkspacesPopoverProps = ButtonBaseProps;
 
-export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopoverProps) {
-  const [workspace, setWorkspace] = useState(data[0]);
+export function WorkspacesPopover({ sx, ...other }: WorkspacesPopoverProps) {
+  const { beneficios, beneficioAtual, selecionarBeneficio } = useBeneficios();
+
+  // Filtrar apenas benefícios ativos
+  const beneficiosAtivos = beneficios.filter((b) => b.status === 'ativo');
 
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
@@ -37,20 +35,26 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
   }, []);
 
   const handleChangeWorkspace = useCallback(
-    (newValue: (typeof data)[number]) => {
-      setWorkspace(newValue);
+    (id: string) => {
+      selecionarBeneficio(id);
       handleClosePopover();
     },
-    [handleClosePopover]
+    [selecionarBeneficio, handleClosePopover]
   );
 
   const renderAvatar = (alt: string, src: string) => (
     <Box component="img" alt={alt} src={src} sx={{ width: 24, height: 24, borderRadius: '50%' }} />
   );
 
-  const renderLabel = (plan: string) => (
-    <Label color={plan === 'Ativo' ? 'success' : 'default'}>{plan}</Label>
+  const renderLabel = (status: string) => (
+    <Label color={status === 'ativo' ? 'success' : 'default'}>
+      {status === 'ativo' ? 'Ativo' : 'Inativo'}
+    </Label>
   );
+
+  if (!beneficioAtual) {
+    return null;
+  }
 
   return (
     <>
@@ -71,7 +75,7 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
         }}
         {...other}
       >
-        {renderAvatar(workspace?.name, workspace?.logo)}
+        {renderAvatar(beneficioAtual.empresa, beneficioAtual.logo)}
 
         <Box
           sx={{
@@ -83,8 +87,8 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
             fontWeight: 'fontWeightSemiBold',
           }}
         >
-          {workspace?.name}
-          {renderLabel(workspace?.plan)}
+          {beneficioAtual.empresa}
+          {renderLabel(beneficioAtual.status)}
         </Box>
 
         <Iconify width={16} icon="carbon:chevron-sort" sx={{ color: 'text.disabled' }} />
@@ -110,19 +114,19 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
             },
           }}
         >
-          {data.map((option) => (
+          {beneficiosAtivos.map((beneficio) => (
             <MenuItem
-              key={option.id}
-              selected={option.id === workspace?.id}
-              onClick={() => handleChangeWorkspace(option)}
+              key={beneficio.id}
+              selected={beneficio.id === beneficioAtual?.id}
+              onClick={() => handleChangeWorkspace(beneficio.id)}
             >
-              {renderAvatar(option.name, option.logo)}
+              {renderAvatar(beneficio.empresa, beneficio.logo)}
 
               <Box component="span" sx={{ flexGrow: 1 }}>
-                {option.name}
+                {beneficio.empresa}
               </Box>
 
-              {renderLabel(option.plan)}
+              {renderLabel(beneficio.status)}
             </MenuItem>
           ))}
         </MenuList>

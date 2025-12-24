@@ -2,12 +2,9 @@ import { useRef, useState, useEffect } from 'react';
 import { useClerk, useSignUp } from '@clerk/clerk-react';
 
 import Box from '@mui/material/Box';
-import Step from '@mui/material/Step';
 import Card from '@mui/material/Card';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Stepper from '@mui/material/Stepper';
-import StepLabel from '@mui/material/StepLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
@@ -18,8 +15,6 @@ import { useRouter } from 'src/routes/hooks';
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
-
-const steps = ['Dados Pessoais', 'Verificação', 'Confirmação'];
 
 // Funções de máscara
 const maskCPF = (value: string) => value
@@ -126,11 +121,11 @@ export function OnboardingView() {
       case 0:
         // Step 0: Dados Pessoais + Criar conta no Clerk
         return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
+            <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }} gutterBottom>
               Crie sua conta
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: { xs: 1, sm: 2 } }}>
               Preencha seus dados para criar sua conta no Plenivi.
             </Typography>
 
@@ -188,11 +183,11 @@ export function OnboardingView() {
       case 1:
         // Step 1: Verificação de elegibilidade
         return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
+            <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }} gutterBottom>
               Verifique sua elegibilidade
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: { xs: 1, sm: 2 } }}>
               Informe seus dados para verificar se você tem direito ao benefício Plenivi.
             </Typography>
             <TextField
@@ -218,16 +213,24 @@ export function OnboardingView() {
         // Step 2: Confirmação (elegível ou não)
         return (
           <Box
-            sx={{ display: 'flex', flexDirection: 'column', gap: 3, textAlign: 'center', py: 4 }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: { xs: 2, sm: 3 },
+              textAlign: 'center',
+              py: { xs: 2, sm: 4 },
+            }}
           >
             {isEligible ? (
               <>
                 <Iconify
                   icon="solar:check-circle-bold"
                   width={80}
-                  sx={{ color: 'success.main', mx: 'auto' }}
+                  sx={{ color: 'success.main', mx: 'auto', width: { xs: 60, sm: 80 } }}
                 />
-                <Typography variant="h5">Parabéns! Você é elegível!</Typography>
+                <Typography variant="h5" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+                  Parabéns! Você é elegível!
+                </Typography>
 
                 <Card sx={{ bgcolor: 'primary.lighter', border: 'none', textAlign: 'left' }}>
                   <CardContent>
@@ -279,9 +282,11 @@ export function OnboardingView() {
                 <Iconify
                   icon="solar:sad-circle-bold"
                   width={80}
-                  sx={{ color: 'error.main', mx: 'auto' }}
+                  sx={{ color: 'error.main', mx: 'auto', width: { xs: 60, sm: 80 } }}
                 />
-                <Typography variant="h5">Você não possui benefícios ativos</Typography>
+                <Typography variant="h5" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+                  Você não possui benefícios ativos
+                </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                   Não encontramos nenhum benefício Plenivi associado aos seus dados.
                 </Typography>
@@ -302,59 +307,83 @@ export function OnboardingView() {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto' }}>
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h4" sx={{ color: 'primary.main' }}>
+    <Box sx={{ maxWidth: 600, mx: 'auto', px: { xs: 2, sm: 0 } }}>
+      <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
+        <Typography
+          variant="h4"
+          sx={{
+            color: 'primary.main',
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+          }}
+        >
           Ative seu Benefício
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 1, fontSize: { xs: '0.875rem', sm: '1rem' } }}
+        >
           Em poucos passos você terá acesso completo ao Plenivi
         </Typography>
       </Box>
 
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Box>
+        {renderStepContent(activeStep)}
 
-      <Card>
-        <CardContent sx={{ p: 4 }}>
-          {renderStepContent(activeStep)}
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-            <Button
-              disabled={activeStep === 0 || activeStep === 2 || isSubmitting}
-              onClick={handleBack}
-              variant="outlined"
-            >
-              Voltar
-            </Button>
-            {activeStep === steps.length - 1 ? (
-              isEligible ? (
-                <Button variant="contained" color="primary" onClick={handleFinish}>
-                  Começar a usar
-                </Button>
-              ) : (
-                <Button variant="contained" color="primary" onClick={handleFinish}>
-                  Ir para o início
-                </Button>
-              )
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            gap: 2,
+            mt: 4,
+          }}
+        >
+          <Button
+            disabled={isSubmitting}
+            onClick={activeStep === 0 ? () => router.push('/sign-in') : handleBack}
+            variant="outlined"
+            fullWidth
+            sx={{ order: { xs: 2, sm: 1 } }}
+          >
+            Voltar
+          </Button>
+          {activeStep === 2 ? (
+            isEligible ? (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleFinish}
+                fullWidth
+                sx={{ order: { xs: 1, sm: 2 } }}
+              >
+                Começar a usar
+              </Button>
             ) : (
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleNext}
-                disabled={isSubmitting}
+                onClick={handleFinish}
+                fullWidth
+                sx={{ order: { xs: 1, sm: 2 } }}
               >
-                {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Continuar'}
+                Ir para o início
               </Button>
-            )}
-          </Box>
-        </CardContent>
-      </Card>
+            )
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleNext}
+              disabled={isSubmitting}
+              fullWidth
+              sx={{ order: { xs: 1, sm: 2 } }}
+            >
+              {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Continuar'}
+            </Button>
+          )}
+        </Box>
+      </Box>
     </Box>
   );
 }
