@@ -73,7 +73,7 @@ export function PleniviDashboardView() {
   return (
     <DashboardContent maxWidth="xl">
       {/* Header de Boas-vindas */}
-      <Box sx={{ mb: { xs: 3, md: 5 } }}>
+      <Box sx={{ mb: 3 }}>
         <Typography variant="h4" sx={{ mb: 1 }}>
           Olá, {user?.firstName} {user?.lastName}!
         </Typography>
@@ -81,6 +81,50 @@ export function PleniviDashboardView() {
           Bem-vindo ao seu painel de benefícios Plenivi
         </Typography>
       </Box>
+
+      {/* Banner de Recomendação IA */}
+      <Card sx={{
+        background: 'linear-gradient(135deg, #3366FF 0%, #1939B7 100%)',
+        color: 'white',
+        mb: { xs: 3, md: 5 }
+      }}>
+        <CardContent sx={{ p: 3 }}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Iconify icon="solar:magic-stick-3-bold-duotone" width={28} />
+                <Typography variant="h6" sx={{ ml: 1 }}>
+                  Recomendação Inteligente
+                </Typography>
+                <Chip
+                  label="IA"
+                  size="small"
+                  sx={{ ml: 1, bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
+                />
+              </Box>
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Descubra armações perfeitas para o seu rosto! Nossa IA analisa suas características
+                e preferências para recomendar os óculos ideais para você.
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: 'white',
+                  color: 'primary.main',
+                  '&:hover': {
+                    bgcolor: 'grey.100',
+                  }
+                }}
+                href="/catalogo?recomendacao=true"
+              >
+                Experimentar
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
 
       <Grid container spacing={3}>
         {/* Card de Saldo */}
@@ -335,50 +379,6 @@ export function PleniviDashboardView() {
           </Card>
         </Grid>
 
-        {/* Banner de Recomendação IA */}
-        <Grid size={12}>
-          <Card sx={{
-            background: 'linear-gradient(135deg, #3366FF 0%, #1939B7 100%)',
-            color: 'white'
-          }}>
-            <CardContent sx={{ p: 3 }}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid size={{ xs: 12, md: 8 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <Iconify icon="solar:magic-stick-3-bold-duotone" width={28} />
-                    <Typography variant="h6" sx={{ ml: 1 }}>
-                      Recomendação Inteligente
-                    </Typography>
-                    <Chip
-                      label="IA"
-                      size="small"
-                      sx={{ ml: 1, bgcolor: 'rgba(255,255,255,0.2)', color: 'white' }}
-                    />
-                  </Box>
-                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    Descubra armações perfeitas para o seu rosto! Nossa IA analisa suas características
-                    e preferências para recomendar os óculos ideais para você.
-                  </Typography>
-                </Grid>
-                <Grid size={{ xs: 12, md: 4 }} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      bgcolor: 'white',
-                      color: 'primary.main',
-                      '&:hover': {
-                        bgcolor: 'grey.100',
-                      }
-                    }}
-                    href="/catalogo?recomendacao=true"
-                  >
-                    Experimentar
-                  </Button>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
       </Grid>
     </DashboardContent>
   );
