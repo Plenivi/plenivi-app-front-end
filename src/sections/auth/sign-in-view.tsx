@@ -48,11 +48,20 @@ export function SignInView() {
       }
     } catch (err: any) {
       console.error('Sign in error:', err);
-      const errorMessage =
-        err.errors?.[0]?.longMessage ||
-        err.errors?.[0]?.message ||
-        'Erro ao fazer login. Verifique suas credenciais.';
-      setError(errorMessage);
+      const errorCode = err.errors?.[0]?.code;
+
+      // Verificar se é erro de conta não encontrada
+      if (errorCode === 'form_identifier_not_found') {
+        setError('Não consegui encontrar a sua conta.');
+      } else if (errorCode === 'form_password_incorrect') {
+        setError('Senha incorreta. Tente novamente.');
+      } else {
+        const errorMessage =
+          err.errors?.[0]?.longMessage ||
+          err.errors?.[0]?.message ||
+          'Erro ao fazer login. Verifique suas credenciais.';
+        setError(errorMessage);
+      }
     } finally {
       setIsSubmitting(false);
     }
