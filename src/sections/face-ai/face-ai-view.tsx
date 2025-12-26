@@ -26,7 +26,7 @@ import { MeasurementInstructions } from './components/measurement-instructions';
 
 type MeasurementMode = 'camera' | 'manual';
 
-export function MedidorPupilarView() {
+export function FaceAiView() {
   const [mode, setMode] = useState<MeasurementMode>('camera');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);

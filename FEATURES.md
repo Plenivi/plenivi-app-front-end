@@ -15,7 +15,7 @@ Este documento lista todas as features implementadas na plataforma Plenivi e ind
 | Pedidos | Funcional | Mock |
 | Perfil | Funcional | Mock |
 | Beneficios | Funcional | Mock |
-| Medidor Pupilar (DP) | Funcional | Mock + Real (Camera) |
+| Face IA | Funcional | Mock + Real (Camera) |
 | Notificacoes | UI apenas | Mock |
 
 ---
@@ -214,41 +214,51 @@ Este documento lista todas as features implementadas na plataforma Plenivi e ind
 
 ---
 
-### 8. Medidor Pupilar (DP)
+### 8. Face IA
 
 **Status:** Funcional
 **Dados:** Mock + Real (Camera)
+**Rota:** `/face-ai`
 
 **Descricao:**
+- Analise facial com IA usando visao computacional
 - Medicao de distância Pupilar (DP) usando camera
-- Deteccao facial com MediaPipe FaceMesh
-- Calculo de DP baseado em landmarks dos olhos
+- Classificacao de formato do rosto (oval, redondo, quadrado, coracao, oblongo)
+- Deteccao facial com MediaPipe FaceLandmarker (478 pontos)
+- Captura estatistica com 90 amostras para maior precisao
 - Entrada manual de DP
 - Historico de medicoes
-- Indicador deconfiança da medicao
+- Indicador de confianca da medicao
 
 **Dados Mock:**
 - `mockMedidas` - Uma medicao inicial de exemplo
 
 **Dados Reais:**
 - Acesso a camera do dispositivo
-- Processamento de imagem com MediaPipe FaceMesh
-- Medicoes salvas em memoria (MedidasContext)
+- Processamento de imagem com MediaPipe FaceLandmarker
+- Medicoes salvas em localStorage (MedidasContext)
 
 **Arquivos:**
-- `src/sections/medidor-pupilar/medidor-pupilar-view.tsx`
-- `src/sections/medidor-pupilar/hooks/use-camera.ts`
-- `src/sections/medidor-pupilar/hooks/use-face-mesh.ts`
-- `src/sections/medidor-pupilar/components/camera-feed.tsx`
-- `src/sections/medidor-pupilar/components/measurement-result.tsx`
-- `src/sections/medidor-pupilar/components/measurement-history.tsx`
-- `src/sections/medidor-pupilar/components/manual-entry-form.tsx`
-- `src/sections/medidor-pupilar/components/measurement-instructions.tsx`
+- `src/sections/face-ai/face-ai-view.tsx`
+- `src/sections/face-ai/hooks/use-camera.ts`
+- `src/sections/face-ai/hooks/use-face-mesh.ts`
+- `src/sections/face-ai/hooks/use-face-capture.ts`
+- `src/sections/face-ai/utils/face-analysis.ts`
+- `src/sections/face-ai/utils/statistics.ts`
+- `src/sections/face-ai/components/camera-feed.tsx`
+- `src/sections/face-ai/components/face-result.tsx`
+- `src/sections/face-ai/components/capture-progress.tsx`
+- `src/sections/face-ai/components/measurement-result.tsx`
+- `src/sections/face-ai/components/measurement-history.tsx`
+- `src/sections/face-ai/components/manual-entry-form.tsx`
+- `src/sections/face-ai/components/measurement-instructions.tsx`
 - `src/contexts/medidas-context.tsx`
 
 **Integracao necessaria:**
 - API para persistir medicoes
 - Possivel integracao com backend para validacao
+
+**Documentacao detalhada:** `docs/FACE_AI.md`
 
 ---
 
@@ -324,5 +334,5 @@ Este documento lista todas as features implementadas na plataforma Plenivi e ind
 - **UI:** Material-UI (MUI) 7
 - **Autenticacao:** Clerk
 - **Roteamento:** React Router 7
-- **IA/ML:** MediaPipe FaceMesh (medicao pupilar)
+- **IA/ML:** MediaPipe FaceLandmarker (analise facial, medicao pupilar, formato de rosto)
 - **Estado:** React Context API

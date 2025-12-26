@@ -42,7 +42,7 @@ export const navData: NavItem[] = [
   },
   {
     title: 'Face IA',
-    path: '/medidor-pupilar',
+    path: '/face-ai',
     icon: iconify('solar:face-scan-circle-bold-duotone'),
     info: (
       <Label color="secondary" variant="inverted">

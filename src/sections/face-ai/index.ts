@@ -1,1 +1,1 @@
-export * from './medidor-pupilar-view';
+export * from './face-ai-view';

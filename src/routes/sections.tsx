@@ -21,7 +21,7 @@ export const ConsultasPage = lazy(() => import('src/pages/consultas'));
 export const PedidosPage = lazy(() => import('src/pages/pedidos'));
 export const PerfilPage = lazy(() => import('src/pages/perfil'));
 export const BeneficiosPage = lazy(() => import('src/pages/beneficios'));
-export const MedidorPupilarPage = lazy(() => import('src/pages/medidor-pupilar'));
+export const FaceAiPage = lazy(() => import('src/pages/face-ai'));
 export const FaceTestePage = lazy(() => import('src/pages/face-teste'));
 
 // Páginas de autenticação
@@ -71,7 +71,7 @@ export const routesSection: RouteObject[] = [
       { path: 'pedidos', element: <PedidosPage /> },
       { path: 'perfil', element: <PerfilPage /> },
       { path: 'beneficios', element: <BeneficiosPage /> },
-      { path: 'medidor-pupilar', element: <MedidorPupilarPage /> },
+      { path: 'face-ai', element: <FaceAiPage /> },
     ],
   },
   // Rotas de autenticação (com GuestGuard)

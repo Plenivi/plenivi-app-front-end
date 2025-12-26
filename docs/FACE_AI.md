@@ -23,7 +23,7 @@ O sistema **Face IA** usa a biblioteca **MediaPipe FaceLandmarker** do Google pa
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         MedidorPupilarView                               │
+│                            FaceAiView                                    │
 │  ┌───────────────┐  ┌──────────────────┐  ┌───────────────────────────┐  │
 │  │  useCamera()  │  │  useFaceCapture()│  │     useMedidas()          │  │
 │  │               │  │                  │  │       (Context)           │  │
@@ -47,7 +47,7 @@ O sistema **Face IA** usa a biblioteca **MediaPipe FaceLandmarker** do Google pa
 │                      v                                                    │
 │  ┌─────────────────────────────────────────┐                             │
 │  │              FaceResult                  │                             │
-│  │  - Valor DP +confiança                  │                             │
+│  │  - Valor DP + confianca                  │                             │
 │  │  - Formato do rosto (chip)               │                             │
 │  │  - Medidas detalhadas (expansivel)       │                             │
 │  └─────────────────────────────────────────┘                             │
@@ -222,7 +222,9 @@ O sistema usa 36 pontos do contorno facial (FACE_OVAL) para calcular:
 | **Redondo** | aspectRatio < 1.1, testa ≈ maxilar |
 | **Quadrado** | aspectRatio < 1.25, testa ≈ macas ≈ maxilar |
 | **Coracao** | Testa significativamente > maxilar |
-| **Oblongo** | aspectRatio > 1.5 (rosto alongado) |
+| **Oblongo** | aspectRatio > 1.6 (rosto alongado) |
+
+> **Nota:** O limiar para oblongo foi ajustado de 1.5 para 1.6 para compensar distorcao de lentes wide-angle em webcams de notebook que tendem a alongar o rosto verticalmente. Valores entre 1.5 e 1.6 sao classificados como oval com confianca reduzida (70%).
 
 ### Uso para Recomendacao de Armacoes
 
@@ -237,24 +239,34 @@ Cada formato tem recomendacoes especificas:
 ## Estrutura de Arquivos
 
 ```
-src/sections/medidor-pupilar/
-├── medidor-pupilar-view.tsx          # Componente principal
+src/sections/face-ai/
+├── index.ts                          # Re-export do componente principal
+├── face-ai-view.tsx                  # Componente principal (FaceAiView)
 ├── hooks/
 │   ├── use-camera.ts                 # Hook de acesso a camera
 │   ├── use-face-mesh.ts              # Hook legado (single-shot)
 │   └── use-face-capture.ts           # Hook de captura estatistica
 ├── utils/
 │   ├── statistics.ts                 # Funcoes de mediana, IQR
+│   ├── capture-config.ts             # Configuracoes de captura
 │   └── face-analysis.ts              # Calculo DP, classificacao
 ├── components/
 │   ├── camera-feed.tsx               # Preview da camera
 │   ├── capture-progress.tsx          # Feedback de progresso
 │   ├── face-result.tsx               # Resultado da Análise
+│   ├── measurement-result.tsx        # Resultado da medicao
 │   ├── manual-entry-form.tsx         # Entrada manual de DP
 │   ├── measurement-history.tsx       # Historico de medicoes
 │   └── measurement-instructions.tsx  # Instrucoes de uso
-└── context/
-    └── medidas-context.tsx           # Persistencia (localStorage)
+
+src/contexts/
+└── medidas-context.tsx               # Persistencia (localStorage)
+
+src/pages/
+└── face-ai.tsx                       # Pagina (rota: /face-ai)
+
+src/routes/
+└── sections.tsx                      # Definicao de rotas
 ```
 
 ## Persistencia de Dados

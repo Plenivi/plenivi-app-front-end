@@ -28,7 +28,7 @@ import { useBeneficios } from 'src/contexts/beneficios-context';
 
 import { Iconify } from 'src/components/iconify';
 
-import { FACE_SHAPE_LABELS, FACE_SHAPE_ICONS } from 'src/sections/medidor-pupilar/utils/face-analysis';
+import { FACE_SHAPE_LABELS, FACE_SHAPE_ICONS } from 'src/sections/face-ai/utils/face-analysis';
 
 // ----------------------------------------------------------------------
 
@@ -604,7 +604,7 @@ export function PerfilView() {
                   <Button
                     variant="contained"
                     startIcon={<Iconify icon="solar:eye-scan-bold" />}
-                    href="/medidor-pupilar"
+                    href="/face-ai"
                   >
                     Medir Agora
                   </Button>

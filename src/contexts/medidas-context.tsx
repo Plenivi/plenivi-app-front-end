@@ -1,4 +1,4 @@
-import type { FaceShapeType, FaceMeasurements } from 'src/sections/medidor-pupilar/utils/face-analysis';
+import type { FaceShapeType, FaceMeasurements } from 'src/sections/face-ai/utils/face-analysis';
 
 import { useMemo, useState, useEffect, useContext, useCallback, createContext } from 'react';
 
