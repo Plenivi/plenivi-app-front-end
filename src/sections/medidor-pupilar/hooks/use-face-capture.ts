@@ -12,6 +12,7 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
 import { medianWithIQR } from '../utils/statistics';
+import { CAPTURE_CONFIG } from '../utils/capture-config';
 import {
   calculateDP,
   isValidFrame,
@@ -22,17 +23,8 @@ import {
 
 import type { FaceShapeResult, NormalizedLandmark } from '../utils/face-analysis';
 
-// ----------------------------------------------------------------------
-// Configuração
-// ----------------------------------------------------------------------
-
-export const CAPTURE_CONFIG = {
-  TARGET_SAMPLES: 100, // Meta de amostras a coletar
-  MIN_VALID_SAMPLES: 60, // Mínimo de amostras válidas para processar
-  MAX_CAPTURE_TIME_MS: 5000, // Timeout máximo (5 segundos)
-  MIN_DETECTION_CONFIDENCE: 0.85, // Confiança mínima de detecção
-  MAX_Z_DIFF_FOR_FRONTAL: 0.03, // Máxima diferença de Z para considerar frontal
-};
+// Re-exportar CAPTURE_CONFIG para manter compatibilidade
+export { CAPTURE_CONFIG } from '../utils/capture-config';
 
 // ----------------------------------------------------------------------
 // Tipos

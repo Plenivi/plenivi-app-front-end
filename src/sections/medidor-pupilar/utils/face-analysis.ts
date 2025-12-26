@@ -4,6 +4,7 @@
  */
 
 import { distance2D } from './statistics';
+import { CAPTURE_CONFIG } from './capture-config';
 
 // ----------------------------------------------------------------------
 // Tipos
@@ -79,14 +80,8 @@ export const LANDMARKS = {
   FACE_RIGHT: 454, // Ponto mais à direita
 };
 
-// Configurações
-export const CAPTURE_CONFIG = {
-  TARGET_SAMPLES: 90,
-  MIN_VALID_SAMPLES: 60,
-  MAX_CAPTURE_TIME_MS: 5000,
-  MIN_DETECTION_CONFIDENCE: 0.85,
-  MAX_Z_DIFF_FOR_FRONTAL: 0.03,
-};
+// Re-exportar CAPTURE_CONFIG para compatibilidade
+export { CAPTURE_CONFIG } from './capture-config';
 
 // Diâmetro médio da íris humana em mm (calibrado)
 const AVG_IRIS_DIAMETER_MM = 12.5;
