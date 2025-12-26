@@ -23,6 +23,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+import { useMedidas } from 'src/contexts/medidas-context';
 import { useBeneficios } from 'src/contexts/beneficios-context';
 
 import { Iconify } from 'src/components/iconify';
@@ -118,6 +119,7 @@ function TabPanel({ children, value, index, ...other }: TabPanelProps) {
 
 export function PerfilView() {
   const { beneficios, beneficioAtual } = useBeneficios();
+  const { medidas, medidaAtual, removerMedida, selecionarMedida } = useMedidas();
   const [tabValue, setTabValue] = useState(0);
   const [editando, setEditando] = useState(false);
   const [dadosUsuario, setDadosUsuario] = useState(mockUsuario);
@@ -243,6 +245,7 @@ export function PerfilView() {
               <Tab label="Endereços" icon={<Iconify icon="solar:map-point-bold" width={20} />} iconPosition="start" />
               <Tab label="Receitas" icon={<Iconify icon="solar:document-bold" width={20} />} iconPosition="start" />
               <Tab label="Notificações" icon={<Iconify icon="solar:bell-bold" width={20} />} iconPosition="start" />
+              <Tab label="Minhas Medidas" icon={<Iconify icon="solar:ruler-bold" width={20} />} iconPosition="start" />
             </Tabs>
 
             {/* Tab: Dados Pessoais */}
@@ -588,6 +591,149 @@ export function PerfilView() {
                     />
                   </ListItem>
                 </List>
+              </CardContent>
+            </TabPanel>
+
+            {/* Tab: Minhas Medidas */}
+            <TabPanel value={tabValue} index={4}>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h6">Minhas Medidas Oculares</Typography>
+                  <Button
+                    variant="contained"
+                    startIcon={<Iconify icon="solar:eye-scan-bold" />}
+                    href="/medidor-pupilar"
+                  >
+                    Medir Agora
+                  </Button>
+                </Box>
+
+                {medidaAtual ? (
+                  <Card sx={{ bgcolor: 'primary.lighter', mb: 3 }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box
+                          sx={{
+                            width: 60,
+                            height: 60,
+                            borderRadius: 2,
+                            bgcolor: 'primary.main',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Iconify icon="solar:eye-bold" width={32} sx={{ color: 'white' }} />
+                        </Box>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Typography variant="subtitle2" color="text.secondary">
+                            Distancia Pupilar (DP) Atual
+                          </Typography>
+                          <Typography variant="h4" color="primary.main">
+                            {medidaAtual.dpValue} mm
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Medida em{' '}
+                            {new Date(medidaAtual.dataRegistro).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
+                            {' · '}
+                            {medidaAtual.metodo === 'camera' ? 'Via Camera' : 'Entrada Manual'}
+                            {' · '}
+                            Confianca: {medidaAtual.confidence}%
+                          </Typography>
+                        </Box>
+                        <Chip
+                          label="Em uso"
+                          color="primary"
+                          size="small"
+                        />
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Alert severity="info" sx={{ mb: 3 }}>
+                    Voce ainda nao possui uma medicao de distancia pupilar (DP) salva. A DP e necessaria para a
+                    confeccao de oculos de grau.
+                  </Alert>
+                )}
+
+                <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
+                  Historico de Medicoes ({medidas.length})
+                </Typography>
+
+                {medidas.length > 0 ? (
+                  <List>
+                    {medidas.map((medida) => (
+                      <ListItem
+                        key={medida.id}
+                        sx={{
+                          border: 1,
+                          borderColor: medida.id === medidaAtual?.id ? 'primary.main' : 'divider',
+                          borderRadius: 1,
+                          mb: 1,
+                          bgcolor: medida.id === medidaAtual?.id ? 'primary.lighter' : 'transparent',
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Iconify
+                            icon={medida.metodo === 'camera' ? 'solar:camera-bold' : 'solar:pen-bold'}
+                            width={24}
+                            color={medida.id === medidaAtual?.id ? 'primary.main' : 'text.secondary'}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                                {medida.dpValue} mm
+                              </Typography>
+                              <Chip
+                                label={`${medida.confidence}%`}
+                                size="small"
+                                color={medida.confidence >= 80 ? 'success' : medida.confidence >= 60 ? 'warning' : 'error'}
+                              />
+                              {medida.id === medidaAtual?.id && (
+                                <Chip label="Atual" size="small" color="primary" />
+                              )}
+                            </Box>
+                          }
+                          secondary={new Date(medida.dataRegistro).toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        />
+                        <ListItemSecondaryAction>
+                          {medida.id !== medidaAtual?.id && (
+                            <Button size="small" onClick={() => selecionarMedida(medida.id)} sx={{ mr: 1 }}>
+                              Usar
+                            </Button>
+                          )}
+                          <IconButton
+                            edge="end"
+                            onClick={() => removerMedida(medida.id)}
+                            sx={{ color: 'error.main' }}
+                            title="Remover medicao"
+                          >
+                            <Iconify icon="solar:trash-bin-trash-bold" width={20} />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <Box sx={{ textAlign: 'center', py: 4, bgcolor: 'grey.50', borderRadius: 2 }}>
+                    <Iconify icon="solar:ruler-bold-duotone" width={48} sx={{ color: 'text.disabled', mb: 1 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      Nenhuma medicao salva ainda.
+                    </Typography>
+                  </Box>
+                )}
               </CardContent>
             </TabPanel>
           </Card>

@@ -41,6 +41,16 @@ export const navData: NavItem[] = [
     icon: iconify('solar:box-bold-duotone'),
   },
   {
+    title: 'Medidor Pupilar',
+    path: '/medidor-pupilar',
+    icon: iconify('solar:eye-scan-bold-duotone'),
+    info: (
+      <Label color="secondary" variant="inverted">
+        IA
+      </Label>
+    ),
+  },
+  {
     title: 'Meus Benefícios',
     path: '/beneficios',
     icon: iconify('solar:wallet-bold-duotone'),

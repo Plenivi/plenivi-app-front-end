@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { usePathname } from 'src/routes/hooks';
 
 import { ThemeProvider } from 'src/theme/theme-provider';
+import { MedidasProvider } from 'src/contexts/medidas-context';
 import { BeneficiosProvider } from 'src/contexts/beneficios-context';
 
 // ----------------------------------------------------------------------
@@ -18,7 +19,9 @@ export default function App({ children }: AppProps) {
 
   return (
     <ThemeProvider>
-      <BeneficiosProvider>{children}</BeneficiosProvider>
+      <MedidasProvider>
+        <BeneficiosProvider>{children}</BeneficiosProvider>
+      </MedidasProvider>
     </ThemeProvider>
   );
 }
