@@ -27,7 +27,13 @@ const mockPedidos = [
 ];
 
 const mockConsultas = [
-  { id: 1, profissional: 'Dr. Carlos Mendes', especialidade: 'Oftalmologista', data: '28/12/2024', hora: '14:30' },
+  {
+    id: 1,
+    profissional: 'Dr. Carlos Mendes',
+    especialidade: 'Oftalmologista',
+    data: '28/12/2024',
+    hora: '14:30',
+  },
 ];
 
 // ----------------------------------------------------------------------
@@ -80,11 +86,13 @@ export function PleniviDashboardView() {
       </Box>
 
       {/* Banner de Recomendação IA */}
-      <Card sx={{
-        background: 'linear-gradient(135deg, #3366FF 0%, #1939B7 100%)',
-        color: 'white',
-        mb: { xs: 3, md: 5 }
-      }}>
+      <Card
+        sx={{
+          background: 'linear-gradient(135deg, #3366FF 0%, #1939B7 100%)',
+          color: 'white',
+          mb: { xs: 3, md: 5 },
+        }}
+      >
         <CardContent sx={{ p: 3 }}>
           <Grid container spacing={2} alignItems="center">
             <Grid size={{ xs: 12, md: 8 }}>
@@ -112,7 +120,7 @@ export function PleniviDashboardView() {
                   color: 'primary.main',
                   '&:hover': {
                     bgcolor: 'grey.100',
-                  }
+                  },
                 }}
                 href="/catalogo?recomendacao=true"
               >
@@ -126,11 +134,13 @@ export function PleniviDashboardView() {
       <Grid container spacing={3}>
         {/* Card de Saldo */}
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <Card sx={{
-            background: 'linear-gradient(135deg, #00A89D 0%, #007A72 100%)',
-            color: 'white',
-            height: '100%'
-          }}>
+          <Card
+            sx={{
+              background: 'linear-gradient(135deg, #00A89D 0%, #007A72 100%)',
+              color: 'white',
+              height: '100%',
+            }}
+          >
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Iconify icon="solar:wallet-bold-duotone" width={32} />
@@ -161,7 +171,7 @@ export function PleniviDashboardView() {
                     bgcolor: 'rgba(255,255,255,0.3)',
                     '& .MuiLinearProgress-bar': {
                       bgcolor: 'white',
-                    }
+                    },
                   }}
                 />
               </Box>
@@ -179,6 +189,33 @@ export function PleniviDashboardView() {
             Acesso Rápido
           </Typography>
           <Grid container spacing={2}>
+                        <Grid size={{ xs: 6, sm: 3 }}>
+              <Paper
+                component="a"
+                href="/face-ai"
+                sx={{
+                  p: 3,
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textDecoration: 'none',
+                  display: 'block',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                <Iconify
+                  icon="solar:face-scan-circle-bold-duotone"
+                  width={40}
+                  sx={{ color: 'info.main', mb: 1 }}
+                />
+                <Typography variant="subtitle2" color="text.info">
+                  Face IA
+                </Typography>
+              </Paper>
+            </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Paper
                 component="a"
@@ -193,10 +230,14 @@ export function PleniviDashboardView() {
                   '&:hover': {
                     transform: 'translateY(-4px)',
                     boxShadow: 4,
-                  }
+                  },
                 }}
               >
-                <Iconify icon="solar:glasses-bold-duotone" width={40} sx={{ color: 'primary.main', mb: 1 }} />
+                <Iconify
+                  icon="solar:glasses-bold-duotone"
+                  width={40}
+                  sx={{ color: 'primary.main', mb: 1 }}
+                />
                 <Typography variant="subtitle2" color="text.primary">
                   Catálogo de Óculos
                 </Typography>
@@ -216,10 +257,14 @@ export function PleniviDashboardView() {
                   '&:hover': {
                     transform: 'translateY(-4px)',
                     boxShadow: 4,
-                  }
+                  },
                 }}
               >
-                <Iconify icon="solar:calendar-bold-duotone" width={40} sx={{ color: 'info.main', mb: 1 }} />
+                <Iconify
+                  icon="solar:calendar-bold-duotone"
+                  width={40}
+                  sx={{ color: 'info.main', mb: 1 }}
+                />
                 <Typography variant="subtitle2" color="text.primary">
                   Agendar Consulta
                 </Typography>
@@ -239,12 +284,43 @@ export function PleniviDashboardView() {
                   '&:hover': {
                     transform: 'translateY(-4px)',
                     boxShadow: 4,
-                  }
+                  },
                 }}
               >
-                <Iconify icon="solar:box-bold-duotone" width={40} sx={{ color: 'warning.main', mb: 1 }} />
+                <Iconify
+                  icon="solar:box-bold-duotone"
+                  width={40}
+                  sx={{ color: 'warning.main', mb: 1 }}
+                />
                 <Typography variant="subtitle2" color="text.primary">
                   Meus Pedidos
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 3 }}>
+              <Paper
+                component="a"
+                href="/beneficios"
+                sx={{
+                  p: 3,
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textDecoration: 'none',
+                  display: 'block',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                <Iconify
+                  icon="solar:wallet-bold-duotone"
+                  width={40}
+                  sx={{ color: 'info.main', mb: 1 }}
+                />
+                <Typography variant="subtitle2" color="text.primary">
+                  Meus Benefícios
                 </Typography>
               </Paper>
             </Grid>
@@ -262,10 +338,14 @@ export function PleniviDashboardView() {
                   '&:hover': {
                     transform: 'translateY(-4px)',
                     boxShadow: 4,
-                  }
+                  },
                 }}
               >
-                <Iconify icon="solar:user-bold-duotone" width={40} sx={{ color: 'secondary.main', mb: 1 }} />
+                <Iconify
+                  icon="solar:user-bold-duotone"
+                  width={40}
+                  sx={{ color: 'secondary.main', mb: 1 }}
+                />
                 <Typography variant="subtitle2" color="text.primary">
                   Meu Perfil
                 </Typography>
@@ -278,10 +358,15 @@ export function PleniviDashboardView() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6">
-                  Pedidos em Andamento
-                </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h6">Pedidos em Andamento</Typography>
                 <Button size="small" href="/pedidos">
                   Ver todos
                 </Button>
@@ -312,7 +397,11 @@ export function PleniviDashboardView() {
                 </List>
               ) : (
                 <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Iconify icon="solar:box-line-duotone" width={48} sx={{ color: 'text.disabled', mb: 1 }} />
+                  <Iconify
+                    icon="solar:box-line-duotone"
+                    width={48}
+                    sx={{ color: 'text.disabled', mb: 1 }}
+                  />
                   <Typography variant="body2" color="text.secondary">
                     Você não tem pedidos em andamento
                   </Typography>
@@ -326,10 +415,15 @@ export function PleniviDashboardView() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6">
-                  Próximas Consultas
-                </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h6">Próximas Consultas</Typography>
                 <Button size="small" href="/consultas">
                   Agendar
                 </Button>
@@ -351,9 +445,7 @@ export function PleniviDashboardView() {
                         secondary={consulta.especialidade}
                       />
                       <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="subtitle2">
-                          {consulta.data}
-                        </Typography>
+                        <Typography variant="subtitle2">{consulta.data}</Typography>
                         <Typography variant="caption" color="text.secondary">
                           {consulta.hora}
                         </Typography>
@@ -363,7 +455,11 @@ export function PleniviDashboardView() {
                 </List>
               ) : (
                 <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Iconify icon="solar:calendar-line-duotone" width={48} sx={{ color: 'text.disabled', mb: 1 }} />
+                  <Iconify
+                    icon="solar:calendar-line-duotone"
+                    width={48}
+                    sx={{ color: 'text.disabled', mb: 1 }}
+                  />
                   <Typography variant="body2" color="text.secondary">
                     Nenhuma consulta agendada
                   </Typography>
@@ -375,7 +471,6 @@ export function PleniviDashboardView() {
             </CardContent>
           </Card>
         </Grid>
-
       </Grid>
     </DashboardContent>
   );

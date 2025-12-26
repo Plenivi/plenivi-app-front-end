@@ -20,15 +20,25 @@ export const navData: NavItem[] = [
     path: '/',
     icon: icon('ic-analytics'),
   },
-  {
-    title: 'Catálogo de Óculos',
-    path: '/catalogo',
-    icon: iconify('solar:glasses-bold-duotone'),
+    {
+    title: 'Face IA',
+    path: '/face-ai',
+    icon: iconify('solar:face-scan-circle-bold-duotone'),
     info: (
       <Label color="info" variant="inverted">
         Novo
       </Label>
     ),
+  },
+  {
+    title: 'Catálogo de Óculos',
+    path: '/catalogo',
+    icon: iconify('solar:glasses-bold-duotone'),
+    // info: (
+    //   <Label color="info" variant="inverted">
+    //     Novo
+    //   </Label>
+    // ),
   },
   {
     title: 'Minhas Consultas',
@@ -39,16 +49,6 @@ export const navData: NavItem[] = [
     title: 'Meus Pedidos',
     path: '/pedidos',
     icon: iconify('solar:box-bold-duotone'),
-  },
-  {
-    title: 'Face IA',
-    path: '/face-ai',
-    icon: iconify('solar:face-scan-circle-bold-duotone'),
-    info: (
-      <Label color="secondary" variant="inverted">
-        IA
-      </Label>
-    ),
   },
   {
     title: 'Meus Benefícios',
