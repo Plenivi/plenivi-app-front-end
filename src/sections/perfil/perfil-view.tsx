@@ -629,7 +629,7 @@ export function PerfilView() {
                         </Box>
                         <Box sx={{ flexGrow: 1 }}>
                           <Typography variant="subtitle2" color="text.secondary">
-                            Distancia Pupilar (DP) Atual
+                            distância Pupilar (DP) Atual
                           </Typography>
                           <Typography variant="h4" color="primary.main">
                             {medidaAtual.dpValue} mm
@@ -644,7 +644,7 @@ export function PerfilView() {
                             {' · '}
                             {medidaAtual.metodo === 'camera' ? 'Via Camera' : 'Entrada Manual'}
                             {' · '}
-                            Confianca: {medidaAtual.confidence}%
+                           confiança: {medidaAtual.confidence}%
                           </Typography>
                         </Box>
                         <Chip
@@ -685,7 +685,7 @@ export function PerfilView() {
                               </Typography>
                             </Box>
                             <Chip
-                              label={`${medidaAtual.faceShape.confidence}% confianca`}
+                              label={`${medidaAtual.faceShape.confidence}%confiança`}
                               size="small"
                               variant="outlined"
                               color="info"
@@ -697,13 +697,13 @@ export function PerfilView() {
                   </Card>
                 ) : (
                   <Alert severity="info" sx={{ mb: 3 }}>
-                    Voce ainda nao possui uma medição de distancia pupilar (DP) salva. A DP e necessaria para a
-                    confeccao de oculos de grau.
+                    Você ainda não possui uma medição de distância pupilar (DP) salva. A DP é necessária para a
+                    confecção de óculos de grau.
                   </Alert>
                 )}
 
                 <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
-                  Historico de Medicoes ({medidas.length})
+                  Histórico de Medições ({medidas.length})
                 </Typography>
 
                 {medidas.length > 0 ? (

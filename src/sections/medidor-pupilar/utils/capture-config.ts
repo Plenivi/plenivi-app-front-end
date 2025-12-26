@@ -19,7 +19,7 @@ export const CAPTURE_CONFIG = {
   /** Timeout maximo em ms */
   MAX_CAPTURE_TIME_MS: Number(import.meta.env.VITE_FACE_CAPTURE_MAX_TIME_MS) || 5000,
 
-  /** Confianca minima de deteccao (0-1) */
+  /**confiança minima de deteccao (0-1) */
   MIN_DETECTION_CONFIDENCE: Number(import.meta.env.VITE_FACE_CAPTURE_MIN_CONFIDENCE) || 0.85,
 
   /** Maxima diferenca de Z para considerar rosto frontal */

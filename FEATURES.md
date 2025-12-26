@@ -220,12 +220,12 @@ Este documento lista todas as features implementadas na plataforma Plenivi e ind
 **Dados:** Mock + Real (Camera)
 
 **Descricao:**
-- Medicao de Distancia Pupilar (DP) usando camera
+- Medicao de distância Pupilar (DP) usando camera
 - Deteccao facial com MediaPipe FaceMesh
 - Calculo de DP baseado em landmarks dos olhos
 - Entrada manual de DP
 - Historico de medicoes
-- Indicador de confianca da medicao
+- Indicador deconfiança da medicao
 
 **Dados Mock:**
 - `mockMedidas` - Uma medicao inicial de exemplo

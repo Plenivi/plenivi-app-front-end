@@ -80,7 +80,7 @@ export function CameraFeed({
           Permitir acesso a camera
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3, textAlign: 'center' }}>
-          Para analisar seu rosto e medir sua distancia pupilar, precisamos acessar sua camera.
+          Para analisar seu rosto e medir sua distância pupilar, precisamos acessar sua camera.
         </Typography>
         <Button variant="contained" size="large" onClick={onStartCamera} startIcon={<Iconify icon="solar:camera-bold" />}>
           Permitir Camera

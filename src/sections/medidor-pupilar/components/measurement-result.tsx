@@ -34,9 +34,9 @@ export function MeasurementResult({
   };
 
   const getConfidenceLabel = () => {
-    if (confidence >= 80) return 'Alta confianca';
-    if (confidence >= 60) return 'Media confianca';
-    return 'Baixa confianca';
+    if (confidence >= 80) return 'Altaconfiança';
+    if (confidence >= 60) return 'Mediaconfiança';
+    return 'Baixaconfiança';
   };
 
   const isValidMeasurement = dpValue !== null && dpValue >= 50 && dpValue <= 80 && confidence >= 60;
@@ -69,7 +69,7 @@ export function MeasurementResult({
                 </Typography>
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Distancia Pupilar (DP)
+                distância Pupilar (DP)
               </Typography>
             </>
           ) : (
@@ -85,7 +85,7 @@ export function MeasurementResult({
           )}
         </Box>
 
-        {/* Indicador de confianca */}
+        {/* Indicador deconfiança */}
         {dpValue !== null && (
           <Box sx={{ mb: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
@@ -106,7 +106,7 @@ export function MeasurementResult({
           </Box>
         )}
 
-        {/* Aviso se baixa confianca */}
+        {/* Aviso se baixaconfiança */}
         {dpValue !== null && confidence < 70 && (
           <Box
             sx={{
@@ -121,7 +121,7 @@ export function MeasurementResult({
           >
             <Iconify icon="solar:danger-triangle-bold" width={20} sx={{ color: 'warning.main', mt: 0.25 }} />
             <Typography variant="caption" color="warning.dark">
-              Confianca baixa. Recomendamos medir novamente em um ambiente bem iluminado, olhando diretamente para a
+             confiança baixa. Recomendamos medir novamente em um ambiente bem iluminado, olhando diretamente para a
               camera.
             </Typography>
           </Box>

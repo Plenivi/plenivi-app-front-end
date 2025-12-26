@@ -46,7 +46,7 @@ export function MedidorPupilarView() {
     return undefined;
   }, [saveSuccess]);
 
-  // Salvar medicao feita pela camera (com analise facial completa)
+  // Salvar medicao feita pela camera (com Análise facial completa)
   const handleSaveCameraMeasurement = () => {
     if (!faceCapture.result) return;
 
@@ -74,11 +74,25 @@ export function MedidorPupilarView() {
     }, 500);
   };
 
-  const handleSaveManualMeasurement = (dpValue: number) => {
+  const handleSaveManualMeasurement = (dpValue: number, faceShapeType?: string) => {
     adicionarMedida({
       dpValue,
       confidence: 100,
       metodo: 'manual',
+      ...(faceShapeType && {
+        faceShape: {
+          classification: faceShapeType as 'oval' | 'round' | 'square' | 'heart' | 'oblong',
+          confidence: 100,
+          measurements: {
+            faceWidth: 0,
+            faceHeight: 0,
+            foreheadWidth: 0,
+            jawWidth: 0,
+            cheekboneWidth: 0,
+            aspectRatio: 0,
+          },
+        },
+      }),
     });
     setSaveSuccess(true);
     setMode('camera');
@@ -107,7 +121,7 @@ export function MedidorPupilarView() {
           Face IA
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Analise seu rosto com IA para medir distancia pupilar e descobrir seu formato de rosto.
+          Análise seu rosto com IA para medir distância pupilar e descobrir seu formato de rosto.
         </Typography>
       </Box>
 
@@ -140,7 +154,7 @@ export function MedidorPupilarView() {
         >
           <Tab
             value="camera"
-            label="Analise com Camera"
+            label="Análise com Camera"
             icon={<Iconify icon="solar:face-scan-circle-bold" width={20} />}
             iconPosition="start"
           />

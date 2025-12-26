@@ -1,14 +1,14 @@
-# Face IA - Analise Facial com Visao Computacional
+# Face IA - Análise Facial com Visao Computacional
 
-Este documento descreve a implementacao do sistema de analise facial usando visao computacional, incluindo medicao de distancia pupilar (DP) e classificacao de formato do rosto.
+Este documento descreve a implementacao do sistema de Análise facial usando visao computacional, incluindo medicao de distância pupilar (DP) e classificacao de formato do rosto.
 
 ## Visao Geral
 
-O sistema **Face IA** usa a biblioteca **MediaPipe FaceLandmarker** do Google para detectar pontos faciais (landmarks) e realizar analises estatisticas para maior precisao. A captura e feita de forma continua, coletando multiplas amostras que sao processadas estatisticamente.
+O sistema **Face IA** usa a biblioteca **MediaPipe FaceLandmarker** do Google para detectar pontos faciais (landmarks) e realizar Análises estatisticas para maior precisao. A captura e feita de forma continua, coletando multiplas amostras que sao processadas estatisticamente.
 
 ### Funcionalidades
 
-- **Medicao de DP**: Calcula a distancia pupilar com alta precisao
+- **Medicao de DP**: Calcula a distância pupilar com alta precisao
 - **Classificacao de Formato**: Identifica o formato do rosto (oval, redondo, quadrado, coracao, oblongo)
 - **Captura Estatistica**: Coleta 90 amostras em ~3 segundos para maior precisao
 - **Persistencia Local**: Dados salvos em localStorage
@@ -47,7 +47,7 @@ O sistema **Face IA** usa a biblioteca **MediaPipe FaceLandmarker** do Google pa
 │                      v                                                    │
 │  ┌─────────────────────────────────────────┐                             │
 │  │              FaceResult                  │                             │
-│  │  - Valor DP + confianca                  │                             │
+│  │  - Valor DP +confiança                  │                             │
 │  │  - Formato do rosto (chip)               │                             │
 │  │  - Medidas detalhadas (expansivel)       │                             │
 │  └─────────────────────────────────────────┘                             │
@@ -80,7 +80,7 @@ IDLE → CAPTURING (90 amostras) → PROCESSING → SUCCESS
    - Para captura
    - Processa estatisticamente (mediana + IQR)
 7. **Resultado exibido**:
-   - DP com confianca
+   - DP comconfiança
    - Formato do rosto
    - Usuario pode salvar ou refazer
 
@@ -93,7 +93,7 @@ CAPTURE_CONFIG = {
   TARGET_SAMPLES: 90,           // Meta de amostras
   MIN_VALID_SAMPLES: 60,        // Minimo para processar
   MAX_CAPTURE_TIME_MS: 5000,    // Timeout (5 segundos)
-  MIN_DETECTION_CONFIDENCE: 0.85,  // Confianca minima
+  MIN_DETECTION_CONFIDENCE: 0.85,  //confiança minima
   MAX_Z_DIFF_FOR_FRONTAL: 0.03,    // Tolerancia para frontalidade
 }
 ```
@@ -108,7 +108,7 @@ Um frame e considerado valido se:
 
 ```typescript
 function isValidFrame(landmarks, confidence) {
-  // 1. Verificar confianca
+  // 1. Verificarconfiança
   if (confidence < 0.85) return false;
 
   // 2. Verificar frontalidade
@@ -181,14 +181,14 @@ LANDMARKS = {
 
 ```
 1. Calcular diametro de cada iris (coordenadas normalizadas):
-   leftIrisDiameter = distancia(469, 471)
-   rightIrisDiameter = distancia(474, 476)
+   leftIrisDiameter = distância(469, 471)
+   rightIrisDiameter = distância(474, 476)
 
 2. Media dos diametros:
    avgIrisDiameter = (leftIrisDiameter + rightIrisDiameter) / 2
 
-3. Distancia entre centros das pupilas:
-   pupilDistance = distancia(468, 473)
+3. distância entre centros das pupilas:
+   pupilDistance = distância(468, 473)
 
 4. Converter para milimetros:
    dpMm = (pupilDistance / avgIrisDiameter) * AVG_IRIS_DIAMETER_MM
@@ -249,7 +249,7 @@ src/sections/medidor-pupilar/
 ├── components/
 │   ├── camera-feed.tsx               # Preview da camera
 │   ├── capture-progress.tsx          # Feedback de progresso
-│   ├── face-result.tsx               # Resultado da analise
+│   ├── face-result.tsx               # Resultado da Análise
 │   ├── manual-entry-form.tsx         # Entrada manual de DP
 │   ├── measurement-history.tsx       # Historico de medicoes
 │   └── measurement-instructions.tsx  # Instrucoes de uso
@@ -322,7 +322,7 @@ Recursos carregados de CDNs:
 
 1. **Iluminacao**: Funciona melhor com boa iluminacao frontal
 2. **Oculos**: Pode ter dificuldade com oculos de grau ou sol
-3. **Distancia**: Usuario deve estar a ~40-60cm da camera
+3. **distância**: Usuario deve estar a ~40-60cm da camera
 4. **Angulo**: Rosto deve estar de frente para a camera
 5. **Resolucao**: Cameras de baixa resolucao podem afetar precisao
 6. **Movimento**: Usuario deve manter o rosto relativamente parado
@@ -342,12 +342,12 @@ Recursos carregados de CDNs:
 ### "Rosto nao detectado"
 - Verificar iluminacao
 - Centralizar rosto na tela
-- Verificar distancia da camera
+- Verificar distância da camera
 
 ### "Medicao muito diferente do esperado"
 - Verificar se o rosto esta de frente
 - Olhar diretamente para a camera
-- Manter distancia adequada (~50cm)
+- Manter distância adequada (~50cm)
 - Se consistentemente errado, ajustar AVG_IRIS_DIAMETER_MM
 
 ### "Camera nao funciona"

@@ -59,37 +59,21 @@ export function FaceResult({ result, onSave, onRetry, isSaving = false }: FaceRe
           {/* Valor do DP */}
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="overline" color="text.secondary">
-              Distancia Pupilar (DP)
+              distância Pupilar (DP)
             </Typography>
             <Typography variant="h2" color="primary.main" sx={{ fontWeight: 700 }}>
               {dp.value} mm
             </Typography>
-            <Stack
-              direction="row"
-              spacing={1}
-              justifyContent="center"
-              alignItems="center"
-              sx={{ mt: 1 }}
-            >
-              <Chip
-                size="small"
-                label={`${dp.confidence}% confianca`}
-                color={dpConfidenceColor}
-                variant="filled"
-              />
-              <Chip
-                size="small"
-                label={`${dp.validSamples} amostras`}
-                variant="outlined"
-              />
-            </Stack>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+              {dp.confidence}%confiança • {dp.validSamples} amostras
+            </Typography>
           </Box>
 
           {/* Barra de Confiança */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
               <Typography variant="caption" color="text.secondary">
-                Confianca da medicao
+               confiança da medicao
               </Typography>
               <Typography variant="caption" color={`${dpConfidenceColor}.main`}>
                 {dp.confidence}%
@@ -125,7 +109,7 @@ export function FaceResult({ result, onSave, onRetry, isSaving = false }: FaceRe
               sx={{ fontSize: '1rem', py: 2.5, px: 1 }}
             />
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-              {faceShape.confidence}% confianca
+              {faceShape.confidence}%confiança
             </Typography>
           </Box>
 
@@ -196,7 +180,7 @@ export function FaceResult({ result, onSave, onRetry, isSaving = false }: FaceRe
             >
               <Iconify icon="mdi:alert" color="warning.main" />
               <Typography variant="body2" color="warning.dark">
-                Confianca baixa. Considere refazer a medicao em melhores condicoes de iluminacao.
+               confiança baixa. Considere refazer a medicao em melhores condicoes de iluminacao.
               </Typography>
             </Box>
           )}
@@ -227,7 +211,7 @@ export function FaceResult({ result, onSave, onRetry, isSaving = false }: FaceRe
 
           {!canSave && (
             <Typography variant="caption" color="error" sx={{ textAlign: 'center' }}>
-              Confianca muito baixa para salvar. Refaca a medicao.
+             confiança muito baixa para salvar. Refaca a medicao.
             </Typography>
           )}
         </Stack>

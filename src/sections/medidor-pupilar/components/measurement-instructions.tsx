@@ -18,8 +18,8 @@ const instructions = [
   },
   {
     icon: 'solar:user-check-rounded-bold-duotone',
-    title: 'Distancia',
-    description: 'Mantenha uma distancia de aproximadamente 40-60 cm da camera.',
+    title: 'Distância',
+    description: 'Mantenha uma distância de aproximadamente 40-60 cm da camera.',
   },
   {
     icon: 'solar:camera-bold-duotone',

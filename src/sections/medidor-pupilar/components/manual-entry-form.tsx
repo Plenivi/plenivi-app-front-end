@@ -4,21 +4,27 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 
 import { Iconify } from 'src/components/iconify';
 
+import { FACE_SHAPE_LABELS, FACE_SHAPE_ICONS } from '../utils/face-analysis';
+
+import type { FaceShapeType } from '../utils/face-analysis';
+
 // ----------------------------------------------------------------------
 
 interface ManualEntryFormProps {
-  onSave: (dpValue: number) => void;
+  onSave: (dpValue: number, faceShape?: FaceShapeType) => void;
   onCancel: () => void;
 }
 
 export function ManualEntryForm({ onSave, onCancel }: ManualEntryFormProps) {
   const [dpValue, setDpValue] = useState('');
+  const [faceShape, setFaceShape] = useState<FaceShapeType | ''>('');
   const [error, setError] = useState('');
 
   const handleSubmit = () => {
@@ -34,7 +40,7 @@ export function ManualEntryForm({ onSave, onCancel }: ManualEntryFormProps) {
       return;
     }
 
-    onSave(value);
+    onSave(value, faceShape || undefined);
   };
 
   return (
@@ -73,6 +79,28 @@ export function ManualEntryForm({ onSave, onCancel }: ManualEntryFormProps) {
           }}
           sx={{ mb: 3 }}
         />
+
+        <TextField
+          fullWidth
+          select
+          label="Formato do Rosto (opcional)"
+          value={faceShape}
+          onChange={(e) => setFaceShape(e.target.value as FaceShapeType | '')}
+          helperText="Selecione o formato do seu rosto, se souber"
+          sx={{ mb: 3 }}
+        >
+          <MenuItem value="">
+            <em>Nao informado</em>
+          </MenuItem>
+          {(Object.keys(FACE_SHAPE_LABELS) as FaceShapeType[]).map((shape) => (
+            <MenuItem key={shape} value={shape}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Iconify icon={FACE_SHAPE_ICONS[shape]} width={20} />
+                {FACE_SHAPE_LABELS[shape]}
+              </Box>
+            </MenuItem>
+          ))}
+        </TextField>
 
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button
