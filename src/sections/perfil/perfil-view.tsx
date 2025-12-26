@@ -28,6 +28,8 @@ import { useBeneficios } from 'src/contexts/beneficios-context';
 
 import { Iconify } from 'src/components/iconify';
 
+import { FACE_SHAPE_LABELS, FACE_SHAPE_ICONS } from 'src/sections/medidor-pupilar/utils/face-analysis';
+
 // ----------------------------------------------------------------------
 
 // Mock data
@@ -651,6 +653,46 @@ export function PerfilView() {
                           size="small"
                         />
                       </Box>
+
+                      {/* Face Shape - Exibir apenas se medição via camera com faceShape */}
+                      {medidaAtual.faceShape && (
+                        <>
+                          <Divider sx={{ my: 2 }} />
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box
+                              sx={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: 2,
+                                bgcolor: 'info.lighter',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Iconify
+                                icon={FACE_SHAPE_ICONS[medidaAtual.faceShape.classification]}
+                                width={28}
+                                sx={{ color: 'info.main' }}
+                              />
+                            </Box>
+                            <Box sx={{ flexGrow: 1 }}>
+                              <Typography variant="subtitle2" color="text.secondary">
+                                Formato do Rosto
+                              </Typography>
+                              <Typography variant="h6" color="info.main">
+                                {FACE_SHAPE_LABELS[medidaAtual.faceShape.classification]}
+                              </Typography>
+                            </Box>
+                            <Chip
+                              label={`${medidaAtual.faceShape.confidence}% confianca`}
+                              size="small"
+                              variant="outlined"
+                              color="info"
+                            />
+                          </Box>
+                        </>
+                      )}
                     </CardContent>
                   </Card>
                 ) : (
@@ -686,7 +728,7 @@ export function PerfilView() {
                         </ListItemIcon>
                         <ListItemText
                           primary={
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                                 {medida.dpValue} mm
                               </Typography>
@@ -695,6 +737,15 @@ export function PerfilView() {
                                 size="small"
                                 color={medida.confidence >= 80 ? 'success' : medida.confidence >= 60 ? 'warning' : 'error'}
                               />
+                              {medida.faceShape && (
+                                <Chip
+                                  icon={<Iconify icon={FACE_SHAPE_ICONS[medida.faceShape.classification]} width={14} />}
+                                  label={FACE_SHAPE_LABELS[medida.faceShape.classification]}
+                                  size="small"
+                                  variant="outlined"
+                                  color="info"
+                                />
+                              )}
                               {medida.id === medidaAtual?.id && (
                                 <Chip label="Atual" size="small" color="primary" />
                               )}

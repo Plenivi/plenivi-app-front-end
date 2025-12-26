@@ -10,36 +10,45 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import { Iconify } from 'src/components/iconify';
 
+import { CaptureProgress } from './capture-progress';
+
+import type { CaptureStatus } from '../hooks/use-face-capture';
+
 // ----------------------------------------------------------------------
 
 interface CameraFeedProps {
   videoRef: RefObject<HTMLVideoElement | null>;
   stream: MediaStream | null;
-  status: 'idle' | 'requesting' | 'active' | 'error';
-  error: string | null;
-  onStart: () => void;
-  onRetry: () => void;
-  onCapture: () => void;
-  onVideoReady?: (element: HTMLVideoElement | null) => void;
-  isModelLoading: boolean;
-  isModelReady: boolean;
-  isProcessing: boolean;
-  capturedImage: string | null;
+  cameraStatus: 'idle' | 'requesting' | 'active' | 'error';
+  cameraError: string | null;
+  onStartCamera: () => void;
+  onRetryCamera: () => void;
+  // Props do Face Capture
+  captureStatus: CaptureStatus;
+  captureProgress: number;
+  validSamples: number;
+  isFrontal: boolean;
+  isCentered: boolean;
+  captureError: string | null;
+  onStartCapture: () => void;
+  onStopCapture: () => void;
 }
 
 export function CameraFeed({
   videoRef,
   stream,
-  status,
-  error,
-  onStart,
-  onRetry,
-  onCapture,
-  onVideoReady,
-  isModelLoading,
-  isModelReady,
-  isProcessing,
-  capturedImage,
+  cameraStatus,
+  cameraError,
+  onStartCamera,
+  onRetryCamera,
+  captureStatus,
+  captureProgress,
+  validSamples,
+  isFrontal,
+  isCentered,
+  captureError,
+  onStartCapture,
+  onStopCapture,
 }: CameraFeedProps) {
   const setVideoRef = useCallback(
     (element: HTMLVideoElement | null) => {
@@ -47,13 +56,12 @@ export function CameraFeed({
       if (element && stream) {
         element.srcObject = stream;
       }
-      onVideoReady?.(element);
     },
-    [videoRef, stream, onVideoReady]
+    [videoRef, stream]
   );
 
-  // Estado inicial - solicitar permissao
-  if (status === 'idle') {
+  // Estado inicial - solicitar permissao da camera
+  if (cameraStatus === 'idle') {
     return (
       <Box
         sx={{
@@ -72,9 +80,9 @@ export function CameraFeed({
           Permitir acesso a camera
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3, textAlign: 'center' }}>
-          Para medir sua distancia pupilar, precisamos acessar sua camera.
+          Para analisar seu rosto e medir sua distancia pupilar, precisamos acessar sua camera.
         </Typography>
-        <Button variant="contained" size="large" onClick={onStart} startIcon={<Iconify icon="solar:camera-bold" />}>
+        <Button variant="contained" size="large" onClick={onStartCamera} startIcon={<Iconify icon="solar:camera-bold" />}>
           Permitir Camera
         </Button>
       </Box>
@@ -82,7 +90,7 @@ export function CameraFeed({
   }
 
   // Solicitando permissao
-  if (status === 'requesting') {
+  if (cameraStatus === 'requesting') {
     return (
       <Box
         sx={{
@@ -101,8 +109,8 @@ export function CameraFeed({
     );
   }
 
-  // Erro
-  if (status === 'error') {
+  // Erro da camera
+  if (cameraStatus === 'error') {
     return (
       <Box
         sx={{
@@ -118,56 +126,26 @@ export function CameraFeed({
       >
         <Iconify icon="solar:camera-broken-bold-duotone" width={64} sx={{ color: 'error.main', mb: 2 }} />
         <Alert severity="error" sx={{ mb: 2, maxWidth: 400 }}>
-          {error || 'Erro ao acessar a camera'}
+          {cameraError || 'Erro ao acessar a camera'}
         </Alert>
-        <Button variant="outlined" onClick={onRetry} startIcon={<Iconify icon="solar:refresh-bold" />}>
+        <Button variant="outlined" onClick={onRetryCamera} startIcon={<Iconify icon="solar:refresh-bold" />}>
           Tentar Novamente
         </Button>
       </Box>
     );
   }
 
-  // Se temos uma imagem capturada, mostrar ela
-  if (capturedImage) {
-    return (
-      <Box sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden', bgcolor: 'black' }}>
-        <Box
-          component="img"
-          src={capturedImage}
-          alt="Foto capturada"
-          sx={{
-            width: '100%',
-            height: 'auto',
-            minHeight: 400,
-            maxHeight: 500,
-            objectFit: 'cover',
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 12,
-            left: 12,
-            bgcolor: 'success.main',
-            color: 'white',
-            px: 2,
-            py: 0.5,
-            borderRadius: 1,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <Iconify icon="solar:check-circle-bold" width={20} />
-          <Typography variant="caption" fontWeight="bold">
-            Foto capturada
-          </Typography>
-        </Box>
-      </Box>
-    );
-  }
+  // Determinar cor do guia oval baseado no estado
+  const getOvalColor = () => {
+    if (captureStatus === 'capturing') {
+      if (isFrontal && isCentered) return 'success.main';
+      if (isFrontal || isCentered) return 'warning.main';
+      return 'error.main';
+    }
+    return 'warning.main';
+  };
 
-  // Camera ativa - mostrar preview com botao de captura
+  // Camera ativa - mostrar preview com controles de captura
   return (
     <Box sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden', bgcolor: 'black' }}>
       <video
@@ -203,14 +181,15 @@ export function CameraFeed({
             width: 200,
             height: 260,
             border: '3px dashed',
-            borderColor: 'warning.main',
+            borderColor: getOvalColor(),
             borderRadius: '50%',
             mb: 2,
+            transition: 'border-color 0.2s ease',
           }}
         />
       </Box>
 
-      {/* Status do modelo e botao de captura */}
+      {/* Controles de captura (overlay inferior) */}
       <Box
         sx={{
           position: 'absolute',
@@ -218,43 +197,19 @@ export function CameraFeed({
           left: 0,
           right: 0,
           p: 2,
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.7))',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 1,
+          background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
         }}
       >
-        {isModelLoading && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'white' }}>
-            <CircularProgress size={16} color="inherit" />
-            <Typography variant="caption">Carregando modelo de IA...</Typography>
-          </Box>
-        )}
-
-        {isModelReady && !isProcessing && (
-          <>
-            <Typography variant="caption" sx={{ color: 'warning.main' }}>
-              Posicione seu rosto dentro do oval e olhe para a camera
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={onCapture}
-              startIcon={<Iconify icon="solar:camera-bold" />}
-              sx={{ minWidth: 200 }}
-            >
-              Capturar Foto
-            </Button>
-          </>
-        )}
-
-        {isProcessing && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'white' }}>
-            <CircularProgress size={20} color="inherit" />
-            <Typography variant="body2">Analisando imagem...</Typography>
-          </Box>
-        )}
+        <CaptureProgress
+          status={captureStatus}
+          progress={captureProgress}
+          validSamples={validSamples}
+          isFrontal={isFrontal}
+          isCentered={isCentered}
+          onStart={onStartCapture}
+          onStop={onStopCapture}
+          error={captureError}
+        />
       </Box>
     </Box>
   );

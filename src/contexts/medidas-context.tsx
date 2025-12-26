@@ -1,6 +1,18 @@
-import { useMemo, useState, useContext, useCallback, createContext } from 'react';
+import type { FaceShapeType, FaceMeasurements } from 'src/sections/medidor-pupilar/utils/face-analysis';
+
+import { useMemo, useState, useEffect, useContext, useCallback, createContext } from 'react';
 
 // ----------------------------------------------------------------------
+
+const STORAGE_KEY = 'plenivi-face-medidas';
+
+// ----------------------------------------------------------------------
+
+export interface FaceShapeData {
+  classification: FaceShapeType;
+  confidence: number;
+  measurements: FaceMeasurements;
+}
 
 export interface Medida {
   id: string;
@@ -8,6 +20,9 @@ export interface Medida {
   confidence: number; // 0-100
   metodo: 'camera' | 'manual';
   dataRegistro: string; // ISO date string
+  // Novos campos para Face IA
+  faceShape?: FaceShapeData;
+  validSamples?: number; // Número de amostras válidas usadas
 }
 
 interface MedidasContextType {
@@ -21,16 +36,35 @@ interface MedidasContextType {
 
 // ----------------------------------------------------------------------
 
-// Mock data inicial
-const mockMedidas: Medida[] = [
-  {
-    id: 'medida-1',
-    dpValue: 63.5,
-    confidence: 92,
-    metodo: 'camera',
-    dataRegistro: '2024-11-15T10:30:00.000Z',
-  },
-];
+/**
+ * Carrega as medidas do localStorage.
+ * Retorna array vazio se não houver dados ou em caso de erro.
+ */
+function loadFromStorage(): Medida[] {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    }
+  } catch (error) {
+    console.error('[MedidasContext] Erro ao carregar do localStorage:', error);
+  }
+  return [];
+}
+
+/**
+ * Salva as medidas no localStorage.
+ */
+function saveToStorage(medidas: Medida[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(medidas));
+  } catch (error) {
+    console.error('[MedidasContext] Erro ao salvar no localStorage:', error);
+  }
+}
 
 // ----------------------------------------------------------------------
 
@@ -39,8 +73,17 @@ const MedidasContext = createContext<MedidasContextType | null>(null);
 // ----------------------------------------------------------------------
 
 export function MedidasProvider({ children }: { children: React.ReactNode }) {
-  const [medidas, setMedidas] = useState<Medida[]>(mockMedidas);
-  const [medidaAtualId, setMedidaAtualId] = useState<string>(mockMedidas[0]?.id || '');
+  // Inicializa com dados do localStorage
+  const [medidas, setMedidas] = useState<Medida[]>(() => loadFromStorage());
+  const [medidaAtualId, setMedidaAtualId] = useState<string>(() => {
+    const saved = loadFromStorage();
+    return saved[0]?.id || '';
+  });
+
+  // Persistir no localStorage sempre que medidas mudar
+  useEffect(() => {
+    saveToStorage(medidas);
+  }, [medidas]);
 
   const medidaAtual = useMemo(
     () => medidas.find((m) => m.id === medidaAtualId) || medidas[0] || null,

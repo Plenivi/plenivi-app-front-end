@@ -1,10 +1,17 @@
-# Medidor de Distancia Pupilar (DP)
+# Face IA - Analise Facial com Visao Computacional
 
-Este documento descreve a implementacao do medidor de distancia pupilar usando visao computacional.
+Este documento descreve a implementacao do sistema de analise facial usando visao computacional, incluindo medicao de distancia pupilar (DP) e classificacao de formato do rosto.
 
 ## Visao Geral
 
-O medidor de DP usa a biblioteca **MediaPipe FaceLandmarker** do Google para detectar pontos faciais (landmarks) e calcular a distancia entre as pupilas.
+O sistema **Face IA** usa a biblioteca **MediaPipe FaceLandmarker** do Google para detectar pontos faciais (landmarks) e realizar analises estatisticas para maior precisao. A captura e feita de forma continua, coletando multiplas amostras que sao processadas estatisticamente.
+
+### Funcionalidades
+
+- **Medicao de DP**: Calcula a distancia pupilar com alta precisao
+- **Classificacao de Formato**: Identifica o formato do rosto (oval, redondo, quadrado, coracao, oblongo)
+- **Captura Estatistica**: Coleta 90 amostras em ~3 segundos para maior precisao
+- **Persistencia Local**: Dados salvos em localStorage
 
 ### Tecnologias Utilizadas
 
@@ -15,41 +22,149 @@ O medidor de DP usa a biblioteca **MediaPipe FaceLandmarker** do Google para det
 ## Arquitetura
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MedidorPupilarView                           │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
-│  │   useCamera()   │  │  useFaceMesh()  │  │   useMedidas()  │  │
-│  │                 │  │                 │  │    (Context)    │  │
-│  │ - startCamera   │  │ - captureAndMeasure │ - adicionarMedida│
-│  │ - stopCamera    │  │ - reset         │  │ - medidas       │  │
-│  │ - stream        │  │ - dpValue       │  │ - medidaAtual   │  │
-│  └────────┬────────┘  └────────┬────────┘  └─────────────────┘  │
-│           │                    │                                 │
-│           v                    v                                 │
-│  ┌─────────────────────────────────────────┐                    │
-│  │              CameraFeed                  │                    │
-│  │  - Preview da camera                     │                    │
-│  │  - Botao "Capturar Foto"                 │                    │
-│  │  - Exibicao da foto capturada            │                    │
-│  └─────────────────────────────────────────┘                    │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         MedidorPupilarView                               │
+│  ┌───────────────┐  ┌──────────────────┐  ┌───────────────────────────┐  │
+│  │  useCamera()  │  │  useFaceCapture()│  │     useMedidas()          │  │
+│  │               │  │                  │  │       (Context)           │  │
+│  │ - startCamera │  │ - startCapture   │  │ - adicionarMedida         │  │
+│  │ - stopCamera  │  │ - stopCapture    │  │ - medidas                 │  │
+│  │ - stream      │  │ - result         │  │ - medidaAtual             │  │
+│  │ - videoRef    │  │ - progress       │  │ - localStorage            │  │
+│  └───────┬───────┘  │ - validSamples   │  └───────────────────────────┘  │
+│          │          │ - isFrontal      │                                  │
+│          │          │ - isCentered     │                                  │
+│          │          └────────┬─────────┘                                  │
+│          │                   │                                            │
+│          v                   v                                            │
+│  ┌─────────────────────────────────────────┐                             │
+│  │              CameraFeed                  │                             │
+│  │  - Preview da camera                     │                             │
+│  │  - Guia oval dinamico                    │                             │
+│  │  - CaptureProgress (overlay)             │                             │
+│  └─────────────────────────────────────────┘                             │
+│                      │                                                    │
+│                      v                                                    │
+│  ┌─────────────────────────────────────────┐                             │
+│  │              FaceResult                  │                             │
+│  │  - Valor DP + confianca                  │                             │
+│  │  - Formato do rosto (chip)               │                             │
+│  │  - Medidas detalhadas (expansivel)       │                             │
+│  └─────────────────────────────────────────┘                             │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Fluxo de Medicao
+## Fluxo de Captura Estatistica
+
+```
+IDLE → CAPTURING (90 amostras) → PROCESSING → SUCCESS
+         │                            │
+         │   ~3 segundos              │  Mediana + IQR
+         │   30 fps                   │
+         └─────── RETRY ←─────────────┘
+              (se < 60 validas)
+```
+
+### Etapas Detalhadas
 
 1. **Usuario acessa a pagina** → Modelo FaceLandmarker comeca a carregar
 2. **Usuario clica "Permitir Camera"** → Camera e iniciada via WebRTC
-3. **Preview e exibido** → Usuario posiciona o rosto
-4. **Usuario clica "Capturar Foto"** → Frame e capturado do video
-5. **Imagem e processada** → FaceLandmarker detecta 478 landmarks faciais
-6. **DP e calculado** → Algoritmo calcula distancia entre pupilas
-7. **Resultado e exibido** → Usuario pode salvar ou tentar novamente
+3. **Modelo pronto** → Status muda para 'ready'
+4. **Usuario clica "Iniciar Captura"** → Loop de captura inicia
+5. **Cada frame (~30fps)**:
+   - FaceLandmarker detecta landmarks
+   - Valida qualidade (confianca >= 85%, rosto frontal)
+   - Se valido, armazena landmarks
+   - Atualiza progresso e indicadores visuais
+6. **Ao atingir 90 amostras** (ou timeout de 5s):
+   - Para captura
+   - Processa estatisticamente (mediana + IQR)
+7. **Resultado exibido**:
+   - DP com confianca
+   - Formato do rosto
+   - Usuario pode salvar ou refazer
 
-## Algoritmo de Calculo do DP
+## Algoritmo de Captura
+
+### Configuracao
+
+```typescript
+CAPTURE_CONFIG = {
+  TARGET_SAMPLES: 90,           // Meta de amostras
+  MIN_VALID_SAMPLES: 60,        // Minimo para processar
+  MAX_CAPTURE_TIME_MS: 5000,    // Timeout (5 segundos)
+  MIN_DETECTION_CONFIDENCE: 0.85,  // Confianca minima
+  MAX_Z_DIFF_FOR_FRONTAL: 0.03,    // Tolerancia para frontalidade
+}
+```
+
+### Validacao de Frame
+
+Um frame e considerado valido se:
+
+1. **Confianca >= 85%**: Deteccao confiavel
+2. **Rosto frontal**: Diferenca de Z entre pupilas <= 0.03
+3. **Landmarks validos**: 478 pontos detectados, sem NaN
+
+```typescript
+function isValidFrame(landmarks, confidence) {
+  // 1. Verificar confianca
+  if (confidence < 0.85) return false;
+
+  // 2. Verificar frontalidade
+  const leftZ = landmarks[468].z;
+  const rightZ = landmarks[473].z;
+  if (Math.abs(leftZ - rightZ) > 0.03) return false;
+
+  // 3. Verificar landmarks da iris
+  const irisIndices = [468, 469, 471, 473, 474, 476];
+  for (const idx of irisIndices) {
+    if (isNaN(landmarks[idx].x)) return false;
+  }
+
+  return true;
+}
+```
+
+## Processamento Estatistico
+
+### Mediana com IQR
+
+Para cada landmark (478 pontos x 3 coordenadas = 1434 valores):
+
+```typescript
+function medianWithIQR(values) {
+  // 1. Ordenar valores
+  const sorted = [...values].sort((a, b) => a - b);
+
+  // 2. Calcular quartis
+  const q1 = quartile(sorted, 0.25);
+  const q3 = quartile(sorted, 0.75);
+  const iqr = q3 - q1;
+
+  // 3. Definir limites
+  const lowerBound = q1 - 1.5 * iqr;
+  const upperBound = q3 + 1.5 * iqr;
+
+  // 4. Filtrar outliers
+  const filtered = values.filter(v =>
+    v >= lowerBound && v <= upperBound
+  );
+
+  // 5. Retornar mediana dos valores filtrados
+  return median(filtered);
+}
+```
+
+### Por que IQR?
+
+- **Robusto a outliers**: Frames com erro de deteccao nao afetam o resultado
+- **Estatisticamente valido**: Metodo padrao para deteccao de outliers
+- **Eficiente**: O(n log n) por coordenada
+
+## Calculo do DP
 
 ### Landmarks Utilizados
-
-O FaceLandmarker retorna 478 pontos faciais. Para o calculo do DP, usamos os landmarks da iris:
 
 ```
 LANDMARKS = {
@@ -64,28 +179,20 @@ LANDMARKS = {
 
 ### Formula de Calculo
 
-O calculo usa o **diametro da iris** como referencia para converter coordenadas normalizadas em milimetros:
-
 ```
-1. Calcular diametro de cada iris (em coordenadas normalizadas):
-   leftIrisDiameter = distancia(LEFT_IRIS_LEFT, LEFT_IRIS_RIGHT)
-   rightIrisDiameter = distancia(RIGHT_IRIS_LEFT, RIGHT_IRIS_RIGHT)
+1. Calcular diametro de cada iris (coordenadas normalizadas):
+   leftIrisDiameter = distancia(469, 471)
+   rightIrisDiameter = distancia(474, 476)
 
 2. Media dos diametros:
    avgIrisDiameter = (leftIrisDiameter + rightIrisDiameter) / 2
 
 3. Distancia entre centros das pupilas:
-   pupilDistance = distancia(LEFT_IRIS_CENTER, RIGHT_IRIS_CENTER)
+   pupilDistance = distancia(468, 473)
 
 4. Converter para milimetros:
    dpMm = (pupilDistance / avgIrisDiameter) * AVG_IRIS_DIAMETER_MM
 ```
-
-### Por que usar o Diametro da Iris?
-
-O diametro da iris humana e relativamente constante entre adultos (10.2-13.0mm, media ~11.7mm), tornando-o uma boa referencia para escala. Isso e mais preciso do que usar a distancia entre os cantos dos olhos, que varia muito mais entre pessoas.
-
-## Calibracao
 
 ### Constante de Calibracao
 
@@ -93,62 +200,96 @@ O diametro da iris humana e relativamente constante entre adultos (10.2-13.0mm, 
 const AVG_IRIS_DIAMETER_MM = 12.5;
 ```
 
-Esta constante representa o diametro medio da iris em milimetros. O valor foi ajustado empiricamente para melhor precisao.
+O diametro medio da iris humana e ~11.7mm (range: 10.2-13.0mm). O valor 12.5mm foi ajustado empiricamente.
 
-### Como Ajustar a Calibracao
+## Classificacao de Formato do Rosto
 
-Se as medicoes estiverem consistentemente erradas:
+### Landmarks do Contorno Facial
 
-1. **Medicao menor que o real**: Aumentar `AVG_IRIS_DIAMETER_MM`
-2. **Medicao maior que o real**: Diminuir `AVG_IRIS_DIAMETER_MM`
+O sistema usa 36 pontos do contorno facial (FACE_OVAL) para calcular:
 
-Formula para ajuste:
-```
-novo_valor = valor_atual * (DP_real / DP_medido)
-```
+- **faceWidth**: Largura nas macas do rosto
+- **faceHeight**: Altura (testa ao queixo)
+- **foreheadWidth**: Largura da testa
+- **jawWidth**: Largura do maxilar
+- **aspectRatio**: Proporcao altura/largura
 
-Exemplo: Se mediu 60mm mas o real e 64mm:
-```
-novo_valor = 11.7 * (64 / 60) = 12.48 ≈ 12.5
-```
+### Regras de Classificacao
 
-### Range Aceitavel
+| Formato | Criterios |
+|---------|-----------|
+| **Oval** | Proporcao equilibrada, testa > maxilar (mais comum) |
+| **Redondo** | aspectRatio < 1.1, testa ≈ maxilar |
+| **Quadrado** | aspectRatio < 1.25, testa ≈ macas ≈ maxilar |
+| **Coracao** | Testa significativamente > maxilar |
+| **Oblongo** | aspectRatio > 1.5 (rosto alongado) |
 
-- Minimo: 10.2mm (iris pequena)
-- Maximo: 13.0mm (iris grande)
-- Recomendado: 11.7mm - 12.5mm
+### Uso para Recomendacao de Armacoes
 
-## Calculo de Confianca
+Cada formato tem recomendacoes especificas:
 
-O sistema calcula um indice de confianca (0-100%) baseado em:
+- **Oval**: Mais versatil, combina com maioria das armacoes
+- **Redondo**: Armacoes angulares adicionam definicao
+- **Quadrado**: Armacoes arredondadas suavizam
+- **Coracao**: Armacoes que equilibram a parte inferior
+- **Oblongo**: Armacoes mais largas equilibram proporcoes
 
-1. **Posicao frontal** (-25% se o rosto estiver inclinado)
-   - Verificado pela diferenca de Z entre as pupilas
-   - `zDiff < 0.03` = olhando de frente
-
-2. **DP no range normal** (-15% se fora do range 50-80mm)
-   - DPs muito fora do range podem indicar erro de deteccao
-
-3. **Simetria da deteccao** (-20% se iris assimetricas)
-   - Ratio entre diametros das iris deve ser > 0.85
-   - Assimetria indica possivel erro na deteccao
-
-## Arquivos Principais
+## Estrutura de Arquivos
 
 ```
 src/sections/medidor-pupilar/
-├── medidor-pupilar-view.tsx      # Componente principal
+├── medidor-pupilar-view.tsx          # Componente principal
 ├── hooks/
-│   ├── use-camera.ts             # Hook de acesso a camera
-│   └── use-face-mesh.ts          # Hook de deteccao facial e calculo DP
+│   ├── use-camera.ts                 # Hook de acesso a camera
+│   ├── use-face-mesh.ts              # Hook legado (single-shot)
+│   └── use-face-capture.ts           # Hook de captura estatistica
+├── utils/
+│   ├── statistics.ts                 # Funcoes de mediana, IQR
+│   └── face-analysis.ts              # Calculo DP, classificacao
 ├── components/
-│   ├── camera-feed.tsx           # Preview da camera e captura
-│   ├── manual-entry-form.tsx     # Entrada manual de DP
-│   ├── measurement-history.tsx   # Historico de medicoes
-│   ├── measurement-instructions.tsx # Instrucoes de uso
-│   └── measurement-result.tsx    # Exibicao do resultado (legado)
-└── MEDIDOR_PUPILAR.md           # Esta documentacao
+│   ├── camera-feed.tsx               # Preview da camera
+│   ├── capture-progress.tsx          # Feedback de progresso
+│   ├── face-result.tsx               # Resultado da analise
+│   ├── manual-entry-form.tsx         # Entrada manual de DP
+│   ├── measurement-history.tsx       # Historico de medicoes
+│   └── measurement-instructions.tsx  # Instrucoes de uso
+└── context/
+    └── medidas-context.tsx           # Persistencia (localStorage)
 ```
+
+## Persistencia de Dados
+
+### Estrutura de Dados
+
+```typescript
+interface Medida {
+  id: string;
+  dpValue: number;
+  confidence: number;
+  metodo: 'camera' | 'manual';
+  dataRegistro: string;
+  faceShape?: {
+    classification: 'oval' | 'round' | 'square' | 'heart' | 'oblong';
+    confidence: number;
+    measurements: {
+      faceWidth: number;
+      faceHeight: number;
+      foreheadWidth: number;
+      jawWidth: number;
+      cheekboneWidth: number;
+      aspectRatio: number;
+    };
+  };
+  validSamples?: number;
+}
+```
+
+### localStorage
+
+- **Chave**: `plenivi-face-medidas`
+- **Formato**: JSON array de Medida
+- **Carregamento**: Automatico na inicializacao
+- **Salvamento**: Automatico a cada mutacao
 
 ## Dependencias
 
@@ -158,9 +299,24 @@ src/sections/medidor-pupilar/
 }
 ```
 
-O modelo e carregado de CDNs:
+Recursos carregados de CDNs:
 - WASM: `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm`
 - Modelo: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`
+
+## Performance
+
+### Otimizacoes
+
+- **requestAnimationFrame**: Loop de captura nao bloqueia UI
+- **GPU delegate**: FaceLandmarker usa GPU quando disponivel
+- **runningMode: VIDEO**: Otimizado para video continuo
+- **Apenas landmarks**: Nao armazena frames de video
+
+### Metricas Tipicas
+
+- **Tempo de captura**: ~3 segundos (90 amostras @ 30fps)
+- **Tempo de processamento**: < 100ms (apos captura)
+- **Uso de memoria**: ~2-3MB para 90 amostras de landmarks
 
 ## Limitacoes Conhecidas
 
@@ -169,6 +325,7 @@ O modelo e carregado de CDNs:
 3. **Distancia**: Usuario deve estar a ~40-60cm da camera
 4. **Angulo**: Rosto deve estar de frente para a camera
 5. **Resolucao**: Cameras de baixa resolucao podem afetar precisao
+6. **Movimento**: Usuario deve manter o rosto relativamente parado
 
 ## Troubleshooting
 
@@ -176,16 +333,22 @@ O modelo e carregado de CDNs:
 - Verificar conexao com internet (modelo e baixado de CDN)
 - Verificar se WebGL esta habilitado no navegador
 
-### "Rosto nao detectado"
+### "Amostras insuficientes"
 - Melhorar iluminacao
-- Centralizar rosto na tela
+- Manter rosto frontal e parado
+- Centralizar rosto no guia oval
 - Remover oculos escuros
+
+### "Rosto nao detectado"
+- Verificar iluminacao
+- Centralizar rosto na tela
+- Verificar distancia da camera
 
 ### "Medicao muito diferente do esperado"
 - Verificar se o rosto esta de frente
 - Olhar diretamente para a camera
 - Manter distancia adequada (~50cm)
-- Ajustar calibracao se consistentemente errado
+- Se consistentemente errado, ajustar AVG_IRIS_DIAMETER_MM
 
 ### "Camera nao funciona"
 - Verificar permissoes do navegador
@@ -196,4 +359,5 @@ O modelo e carregado de CDNs:
 
 - [MediaPipe Face Landmarker](https://developers.google.com/mediapipe/solutions/vision/face_landmarker)
 - [Face Mesh Landmarks](https://github.com/google-ai-edge/mediapipe/blob/master/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png)
-- [Iris Diameter Studies](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4075958/) - Estudos sobre diametro da iris humana
+- [Iris Diameter Studies](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4075958/)
+- [IQR Method for Outlier Detection](https://en.wikipedia.org/wiki/Interquartile_range)

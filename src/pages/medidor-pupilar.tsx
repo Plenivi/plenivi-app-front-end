@@ -7,8 +7,8 @@ import { MedidorPupilarView } from 'src/sections/medidor-pupilar';
 export default function MedidorPupilarPage() {
   return (
     <>
-      <title>{`Medidor Pupilar - ${CONFIG.appName}`}</title>
-      <meta name="description" content="Meça sua distância pupilar usando a câmera do seu dispositivo" />
+      <title>{`Face IA - ${CONFIG.appName}`}</title>
+      <meta name="description" content="Analise seu rosto com IA para medir distancia pupilar e descobrir o formato ideal de armacoes" />
 
       <MedidorPupilarView />
     </>

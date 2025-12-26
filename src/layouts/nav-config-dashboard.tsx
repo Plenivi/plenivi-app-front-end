@@ -41,9 +41,9 @@ export const navData: NavItem[] = [
     icon: iconify('solar:box-bold-duotone'),
   },
   {
-    title: 'Medidor Pupilar',
+    title: 'Face IA',
     path: '/medidor-pupilar',
-    icon: iconify('solar:eye-scan-bold-duotone'),
+    icon: iconify('solar:face-scan-circle-bold-duotone'),
     info: (
       <Label color="secondary" variant="inverted">
         IA
