@@ -8,7 +8,7 @@ import { Iconify } from 'src/components/iconify';
 const instructions = [
   {
     icon: 'solar:sun-bold-duotone',
-    title: 'Iluminacao',
+    title: 'Iluminação',
     description: 'Posicione-se em um local bem iluminado, de preferencia com luz natural.',
   },
   {
@@ -33,7 +33,7 @@ export function MeasurementInstructions() {
     <Box sx={{ mb: 3 }}>
       <Typography variant="subtitle1" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
         <Iconify icon="solar:info-circle-bold" width={20} color="info.main" />
-        Dicas para uma boa medicao
+        Dicas para uma boa medição
       </Typography>
 
       <Box

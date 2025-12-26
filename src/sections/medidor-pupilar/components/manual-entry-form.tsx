@@ -45,7 +45,7 @@ export function ManualEntryForm({ onSave, onCancel }: ManualEntryFormProps) {
         </Typography>
 
         <Alert severity="info" sx={{ mb: 3 }}>
-          Se voce ja possui a medicao da sua distancia pupilar (DP) de uma consulta anterior, pode inseri-la manualmente
+          Se você já possui a medição da sua distância pupilar (DP) de uma consulta anterior, pode inseri-la manualmente
           aqui.
         </Alert>
 

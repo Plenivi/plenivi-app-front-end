@@ -655,7 +655,7 @@ export function PerfilView() {
                   </Card>
                 ) : (
                   <Alert severity="info" sx={{ mb: 3 }}>
-                    Voce ainda nao possui uma medicao de distancia pupilar (DP) salva. A DP e necessaria para a
+                    Voce ainda nao possui uma medição de distancia pupilar (DP) salva. A DP e necessaria para a
                     confeccao de oculos de grau.
                   </Alert>
                 )}
@@ -718,7 +718,7 @@ export function PerfilView() {
                             edge="end"
                             onClick={() => removerMedida(medida.id)}
                             sx={{ color: 'error.main' }}
-                            title="Remover medicao"
+                            title="Remover medição"
                           >
                             <Iconify icon="solar:trash-bin-trash-bold" width={20} />
                           </IconButton>
@@ -730,7 +730,7 @@ export function PerfilView() {
                   <Box sx={{ textAlign: 'center', py: 4, bgcolor: 'grey.50', borderRadius: 2 }}>
                     <Iconify icon="solar:ruler-bold-duotone" width={48} sx={{ color: 'text.disabled', mb: 1 }} />
                     <Typography variant="body2" color="text.secondary">
-                      Nenhuma medicao salva ainda.
+                      Nenhuma medição salva ainda.
                     </Typography>
                   </Box>
                 )}

@@ -57,10 +57,10 @@ export function MeasurementHistory({ medidas, medidaAtualId, onSelect, onDelete 
           >
             <Iconify icon="solar:clipboard-list-bold-duotone" width={48} sx={{ color: 'text.disabled', mb: 1 }} />
             <Typography variant="body2" color="text.secondary">
-              Nenhuma medicao salva ainda.
+              Nenhuma medição salva ainda.
             </Typography>
             <Typography variant="caption" color="text.disabled">
-              Faca sua primeira medicao acima.
+              Faça sua primeira medição acima.
             </Typography>
           </Box>
         </CardContent>
@@ -91,7 +91,7 @@ export function MeasurementHistory({ medidas, medidaAtualId, onSelect, onDelete 
                   edge="end"
                   onClick={() => onDelete(medida.id)}
                   sx={{ color: 'error.main' }}
-                  title="Remover medicao"
+                  title="Remover medição"
                 >
                   <Iconify icon="solar:trash-bin-trash-bold" width={20} />
                 </IconButton>

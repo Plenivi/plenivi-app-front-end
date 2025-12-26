@@ -58,7 +58,7 @@ export function MedidorPupilarView() {
     }
   }, [videoElement, faceMesh]);
 
-  // Salvar medicao
+  // Salvar mediçapo feita pela camera
   const handleSaveCameraMeasurement = () => {
     if (faceMesh.dpValue === null) return;
 
@@ -108,14 +108,14 @@ export function MedidorPupilarView() {
           Medidor de Distancia Pupilar (DP)
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Meca sua distancia pupilar usando a camera do seu dispositivo ou insira manualmente.
+          Meça sua distância pupilar usando a câmera do seu dispositivo ou insira manualmente.
         </Typography>
       </Box>
 
       {/* Alerta de sucesso */}
       {saveSuccess && (
         <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSaveSuccess(false)}>
-          Medicao salva com sucesso! Sua DP de {medidaAtual?.dpValue} mm esta disponivel para uso.
+          Medição salva com sucesso! Sua DP de {medidaAtual?.dpValue} mm está disponível para uso.
         </Alert>
       )}
 
@@ -187,12 +187,12 @@ export function MedidorPupilarView() {
 
         {/* Coluna lateral */}
         <Grid size={{ xs: 12, lg: 4 }}>
-          {/* Resultado da medicao (quando tiver foto capturada) */}
+          {/* Resultado da medição (quando tiver foto capturada) */}
           {mode === 'camera' && faceMesh.capturedImage && (
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>
-                  Resultado da Medicao
+                  Resultado da Medição
                 </Typography>
 
                 {faceMesh.faceDetected && faceMesh.dpValue ? (
@@ -214,7 +214,7 @@ export function MedidorPupilarView() {
                         disabled={isSaving}
                         startIcon={<Iconify icon="solar:diskette-bold" />}
                       >
-                        {isSaving ? 'Salvando...' : 'Salvar Medicao'}
+                        {isSaving ? 'Salvando...' : 'Salvar Medição'}
                       </Button>
                       <Button fullWidth variant="outlined" onClick={handleNewCapture}>
                         Nova Foto
@@ -236,7 +236,7 @@ export function MedidorPupilarView() {
             </Card>
           )}
 
-          {/* Medicao atual salva */}
+          {/* Medição atual salva */}
           {medidaAtual && (
             <Card sx={{ mb: 3, bgcolor: 'primary.lighter' }}>
               <CardContent>

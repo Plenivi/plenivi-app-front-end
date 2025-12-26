@@ -431,7 +431,7 @@ export function FaceTesteView() {
               }}
             >
               <Iconify icon="solar:camera-bold-duotone" width={64} sx={{ mb: 2, opacity: 0.5 }} />
-              <Typography variant="body2">Clique em &quot;Iniciar Camera&quot; para comecar</Typography>
+              <Typography variant="body2">Clique em &quot;Iniciar câmera&quot; para começar</Typography>
             </Box>
           )}
         </Box>

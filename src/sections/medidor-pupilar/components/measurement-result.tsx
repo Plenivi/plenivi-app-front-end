@@ -45,7 +45,7 @@ export function MeasurementResult({
     <Card>
       <CardContent>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Resultado da Medicao
+          Resultado da Medição
         </Typography>
 
         {/* Valor da DP */}
@@ -90,7 +90,7 @@ export function MeasurementResult({
           <Box sx={{ mb: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
               <Typography variant="body2" color="text.secondary">
-                Confianca da medicao
+                Confiança da medição
               </Typography>
               <Chip label={getConfidenceLabel()} color={getConfidenceColor()} size="small" />
             </Box>
@@ -136,7 +136,7 @@ export function MeasurementResult({
             disabled={!isValidMeasurement || isSaving}
             startIcon={<Iconify icon="solar:check-circle-bold" />}
           >
-            {isSaving ? 'Salvando...' : 'Salvar Medicao'}
+            {isSaving ? 'Salvando...' : 'Salvar Medição'}
           </Button>
           <Button variant="outlined" onClick={onReset} startIcon={<Iconify icon="solar:refresh-bold" />}>
             Refazer
