@@ -324,10 +324,17 @@ export function classifyFaceShape(
   let confidence = 80; // Confiança base
 
   // Classificação baseada em características
-  if (aspectRatio > 1.5) {
-    // Rosto alongado
+  // Nota: limiar ajustado de 1.5 para 1.6 para compensar distorção de lentes wide-angle
+  // em webcams de notebook que tendem a alongar o rosto verticalmente
+  if (aspectRatio > 1.6) {
+    // Rosto claramente alongado
     classification = 'oblong';
     confidence = 85;
+  } else if (aspectRatio > 1.5) {
+    // Zona intermediária - pode ser oval alongado ou oblongo leve
+    // Classificar como oval com confiança menor
+    classification = 'oval';
+    confidence = 70;
   } else if (aspectRatio < 1.1 && Math.abs(foreheadToJawRatio - 1) < 0.1) {
     // Proporção quase 1:1, testa e maxilar similares
     classification = 'round';

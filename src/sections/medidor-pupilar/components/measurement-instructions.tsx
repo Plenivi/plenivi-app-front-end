@@ -24,7 +24,7 @@ const instructions = [
   {
     icon: 'solar:camera-bold-duotone',
     title: 'Captura',
-    description: 'Posicione seu rosto dentro do oval e clique em "Capturar Foto" quando estiver pronto.',
+    description: 'Posicione seu rosto sem óculos ou acessórios dentro do oval e clique em "Iniciar Captura" quando estiver pronto.',
   },
 ];
 
