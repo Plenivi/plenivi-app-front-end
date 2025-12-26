@@ -22,6 +22,7 @@ export const PedidosPage = lazy(() => import('src/pages/pedidos'));
 export const PerfilPage = lazy(() => import('src/pages/perfil'));
 export const BeneficiosPage = lazy(() => import('src/pages/beneficios'));
 export const MedidorPupilarPage = lazy(() => import('src/pages/medidor-pupilar'));
+export const FaceTestePage = lazy(() => import('src/pages/face-teste'));
 
 // Páginas de autenticação
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
@@ -90,6 +91,15 @@ export const routesSection: RouteObject[] = [
       <AuthLayout>
         <OnboardingPage />
       </AuthLayout>
+    ),
+  },
+  // Rota de teste (sem menu)
+  {
+    path: 'faceteste',
+    element: (
+      <Suspense fallback={renderFallback()}>
+        <FaceTestePage />
+      </Suspense>
     ),
   },
   // Rotas de erro
